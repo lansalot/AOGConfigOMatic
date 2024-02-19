@@ -1,5 +1,5 @@
 # AOGConfigOMatic
-A helper to easily flash the Teensy for agOpenGPS
+A helper to easily flash the Teensy and F9P for agOpenGPS
 
 [![Build and release](https://github.com/lansalot/AOGConfigOMatic/actions/workflows/main.yml/badge.svg)](https://github.com/lansalot/AOGConfigOMatic/actions/workflows/main.yml)
 
