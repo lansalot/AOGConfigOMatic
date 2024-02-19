@@ -81,7 +81,7 @@ jobs:
       
     - name: Build Artifact AOGTeensyFlasher
       shell: powershell
-      run: Compress-Archive -Path TeensyFlasher\bin\Release\* -DestinationPath AOGTeensyFlasher.zip -Force
+      run: Compress-Archive -Path TeensyFlasher\bin\Release\* -DestinationPath AOGConfigOMatic.zip -Force
 
     - name: Create Release
       id: create_release
@@ -96,13 +96,13 @@ jobs:
         draft: false
         prerelease: false
                
-    - name: Upload Release Asset AOGTeensyFlasher
-      id: upload-release-asset-AOGTeensyFlasher
+    - name: Upload Release Asset AOGConfigOMatic
+      id: upload-release-asset-AOGConfigOMatic
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./AOGTeensyFlasher.zip
-        asset_name: AOGTeensyFlasher.zip
+        asset_path: ./AOGConfigOMatic.zip
+        asset_name: AOGConfigOMatic.zip
         asset_content_type: application/zip
