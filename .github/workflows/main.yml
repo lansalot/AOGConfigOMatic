@@ -51,7 +51,7 @@ jobs:
         version_format: "v${major}.${minor}.${patch}.${increment}"
         # Optional path to check for changes. If any changes are detected in the path the
         # 'changed' output will true. Enter multiple paths separated by spaces.
-        change_path: "./SourceCode"
+        change_path: "./TeensyFlasher"
         # Named version, will be used as suffix for name version tag
         #namespace: project-b
         # Indicate whether short tags like 'v1' should be supported. If false only full
