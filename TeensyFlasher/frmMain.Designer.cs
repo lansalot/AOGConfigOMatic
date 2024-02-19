@@ -376,6 +376,7 @@ namespace TeensyFlasher
             this.lbFirmware.Name = "lbFirmware";
             this.lbFirmware.Size = new System.Drawing.Size(919, 204);
             this.lbFirmware.TabIndex = 11;
+            this.lbFirmware.SelectedIndexChanged += new System.EventHandler(this.lbFirmware_SelectedIndexChanged_1);
             // 
             // frmMain
             // 

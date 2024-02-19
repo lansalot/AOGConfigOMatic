@@ -111,19 +111,6 @@ namespace TeensyFlasher
             ScanPorts();
         }
 
-        private void lbFirmware_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            var lines = File.ReadAllLines(localCSV);
-            chosenFirmware = lines
-                .Where(line => line.Split(',')[0] == (String)lbFirmware.SelectedValue)
-                .Select(line => line.Split(',')[1])
-                .FirstOrDefault();
-            if (lbFirmware.SelectedIndex > -1 && lbTeensies.SelectedIndex > -1 && lbTeensies.Items.Count > 0)
-            {
-                btnProgram.Enabled = true;
-            }
-        }
-
         bool DownloadFile(string url, string localFile)
         {
             try
@@ -757,6 +744,19 @@ namespace TeensyFlasher
             if (rbDualRelPos.Checked)
             {
                 _FileName = ".\\DualRelPos.txt";
+            }
+        }
+
+        private void lbFirmware_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+            var lines = File.ReadAllLines(localCSV);
+            chosenFirmware = lines
+                .Where(line => line.Split(',')[0] == (String)lbFirmware.SelectedValue)
+                .Select(line => line.Split(',')[1])
+                .FirstOrDefault();
+            if (lbFirmware.SelectedIndex > -1 && lbTeensies.SelectedIndex > -1 && lbTeensies.Items.Count > 0)
+            {
+                btnProgram.Enabled = true;
             }
         }
     }
