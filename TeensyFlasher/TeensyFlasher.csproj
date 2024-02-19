@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{2BE12002-7524-4552-9D32-1AC61BF78672}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>TeensyFlasher</RootNamespace>
-    <AssemblyName>TeensyFlasher</AssemblyName>
+    <RootNamespace>AOGConfigOMatic</RootNamespace>
+    <AssemblyName>AOGConfigOMatic</AssemblyName>
     <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
     <LangVersion>8.0</LangVersion>
     <Nullable>enable</Nullable>
@@ -91,6 +91,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Firmwares.csv" />
     <None Include="packages.config" />

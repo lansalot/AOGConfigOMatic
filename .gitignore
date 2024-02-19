@@ -1,0 +1,11 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/TeensyFlasher
+/bin/Debug
+/obj/Debug
+/TeensyFlasher/bin
+/TeensyFlasher/obj
+/TeensyFlasher/.vs
+/packages

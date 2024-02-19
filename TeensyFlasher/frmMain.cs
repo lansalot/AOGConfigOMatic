@@ -143,7 +143,7 @@ namespace TeensyFlasher
         }
         private void btnRefreshTeensy_Click(object sender, EventArgs e)
         {
-            string url = "https://raw.githubusercontent.com/lansalot/AOGTeensyFlasher/main/Firmwares.csv";
+            string url = "https://raw.githubusercontent.com/lansalot/AOGConfigOMatic/main/Firmwares.csv";
             DownloadFile(url, localCSV);
             UpdateFirmwareBox();
         }
@@ -453,10 +453,10 @@ namespace TeensyFlasher
                 return;
             }
 
-            if (_serialPort == null)
-            {
-                _serialPort.DataReceived -= MySerialPort_DataReceived;
-            }
+            //if (_serialPort == null) // was I drunk?
+            //{
+            //    _serialPort.DataReceived -= MySerialPort_DataReceived;
+            //}
             btnConfigF9P.Enabled = false;
             btnConnect.Enabled = false;
             btnF9PFlashFirmware.Enabled = false;
