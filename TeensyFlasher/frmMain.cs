@@ -37,6 +37,8 @@ namespace TeensyFlasher
         private string _FileName = ".\\Single.txt";
         private bool isProgrammingF9P = false;
         private bool isClosing = false;
+        private int errorCount = 0;
+
         #region Teensy
 
 
@@ -275,7 +277,8 @@ namespace TeensyFlasher
                         safeChat(".");
                         spL.Open();
                         break;
-                    } else
+                    }
+                    else
                     {
                         break;
                     }
@@ -291,6 +294,12 @@ namespace TeensyFlasher
                     safeChat("Failed to re-open serial port - retry " + retries.ToString());
                     break;
                 }
+            }
+            if (!spL.IsOpen)
+            {
+                // sometimes the port closes, for some reason...
+                safeChat("Serial port closed unexpectedly - please try again!");
+                return;
             }
             buf = new byte[spL.BytesToRead];
             spL.Read(buf, 0, buf.Length);
@@ -342,6 +351,7 @@ namespace TeensyFlasher
                     // 0x00 is NAK
                     else if (_ubxParseBuffer[3] == 0x00)
                     {
+                        errorCount++;
                         _ack = false;
                         _waitForAckNak.Set();
                         ResetUbxBuffer();
@@ -512,8 +522,11 @@ namespace TeensyFlasher
                                 // Retry sending line
                                 if (!SendLine(line))
                                 {
-                                    //safeChat("Sending the line again did not work either");
-                                    //break;
+                                    if (errorCount > 5)
+                                    {
+                                        safeChat("Too many errors, aborting");
+                                        throw new Exception("Too many errors");
+                                    }
                                 }
                             }
                         }
@@ -538,6 +551,7 @@ namespace TeensyFlasher
                     btnConnect.Enabled = true;
                     btnF9PFlashFirmware.Enabled = true;
                     btnURefresh.Enabled = true;
+                    errorCount = 0;
                     //StopReadingData();
                 }
             }
@@ -717,7 +731,7 @@ namespace TeensyFlasher
             }
             if (lblFirmwareWarning.ForeColor == Color.Red)
             {
-                MessageBox.Show("Firmware MUST be version 1.13. Please flash it first.","Error!!",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                MessageBox.Show("Firmware MUST be version 1.13. Please flash it first.", "Error!!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 txtSerialChat.AppendText("Firmware MUST be version 1.13. Please flash it first." + Environment.NewLine);
                 return;
             }
@@ -758,6 +772,51 @@ namespace TeensyFlasher
             if (lbFirmware.SelectedIndex > -1 && lbTeensies.SelectedIndex > -1 && lbTeensies.Items.Count > 0)
             {
                 btnProgram.Enabled = true;
+            }
+        }
+
+        private void btnHelp_Click(object sender, EventArgs e)
+        {
+            ContextMenuStrip contexMenu = new ContextMenuStrip();
+            contexMenu.Font = new Font("Microsoft Sans Serif", 14);
+            //contexMenu.Items.Add("Video Tutorial");
+            contexMenu.Items.Add("AOGConfig-O-Matic!");
+            contexMenu.Items.Add("AgOpenGPS Tools");
+            contexMenu.Items.Add("AgOpenGPS videos");
+            contexMenu.Items.Add("AgOpenGPS");
+            contexMenu.Items.Add("AgHardware");
+            contexMenu.Items.Add("AOG Discourse");
+            contexMenu.Show(Cursor.Position.X, Cursor.Position.Y);
+            contexMenu.ItemClicked += new ToolStripItemClickedEventHandler(
+                contexMenu_ItemClicked);
+        }
+
+        void contexMenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            ToolStripItem item = e.ClickedItem;
+            switch (item.Text)
+            {
+                case "Video Tutorial":
+                    System.Diagnostics.Process.Start("https://www.youtube.com/user/lansing9r");
+                    break;
+                case "AgOpenGPS":
+                    System.Diagnostics.Process.Start("https://github.com/farmerbriantee/AgOpenGPS");
+                    break;
+                case "AgHardware":
+                    System.Diagnostics.Process.Start("https://github.com/AgHardware");
+                    break;
+                case "AgOpenGPS videos":
+                    System.Diagnostics.Process.Start("https://www.youtube.com/user/lansing9r");
+                    break;
+                case "AOG Discourse":
+                    System.Diagnostics.Process.Start("https://discourse.agopengps.com/");
+                    break;
+                case "AOGConfig-O-Matic!":
+                    System.Diagnostics.Process.Start("https://github.com/lansalot/AOGConfigOMatic");
+                    break;
+                case "AgOpenGPS Tools":
+                    System.Diagnostics.Process.Start("https://github.com/lansalot/AgOpenGPS-Tools");
+                    break;
             }
         }
     }
