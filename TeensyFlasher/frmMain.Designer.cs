@@ -64,6 +64,7 @@ namespace TeensyFlasher
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.lbFirmware = new System.Windows.Forms.ListBox();
+            this.btnHelp = new System.Windows.Forms.Button();
             this.tbPages.SuspendLayout();
             this.tabGPS.SuspendLayout();
             this.pblF9PConfig.SuspendLayout();
@@ -85,6 +86,7 @@ namespace TeensyFlasher
             // 
             // tabGPS
             // 
+            this.tabGPS.Controls.Add(this.btnHelp);
             this.tabGPS.Controls.Add(this.pbConfiguration);
             this.tabGPS.Controls.Add(this.pblF9PConfig);
             this.tabGPS.Controls.Add(this.lblFirmwareWarning);
@@ -378,6 +380,16 @@ namespace TeensyFlasher
             this.lbFirmware.TabIndex = 11;
             this.lbFirmware.SelectedIndexChanged += new System.EventHandler(this.lbFirmware_SelectedIndexChanged_1);
             // 
+            // btnHelp
+            // 
+            this.btnHelp.Location = new System.Drawing.Point(911, 0);
+            this.btnHelp.Name = "btnHelp";
+            this.btnHelp.Size = new System.Drawing.Size(49, 50);
+            this.btnHelp.TabIndex = 14;
+            this.btnHelp.Text = "?";
+            this.btnHelp.UseVisualStyleBackColor = true;
+            this.btnHelp.Click += new System.EventHandler(this.btnHelp_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -427,6 +439,7 @@ namespace TeensyFlasher
         private RadioButton rbDualLocation;
         private RadioButton rbSingleF9P;
         private ProgressBar pbConfiguration;
+        private Button btnHelp;
     }
 }
 
