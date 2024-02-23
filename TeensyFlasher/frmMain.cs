@@ -226,7 +226,15 @@ namespace TeensyFlasher
                     return;
                 }
                 _serialPort = new SerialPort(SelectedComPort, 460800, Parity.None, 8, StopBits.One);
-                _serialPort.Open();
+                try
+                {
+                    _serialPort.Open();
+                }
+                catch
+                {
+                    safeChat("Error opening serial port - make sure anything using it (U-Center?) is closed!");
+                    return;
+                }
                 btnConnect.Text = "Disconnect";
                 _serialPort.DataReceived += MySerialPort_DataReceived;
                 isReadingData = true;
