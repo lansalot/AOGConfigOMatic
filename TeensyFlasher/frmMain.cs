@@ -787,7 +787,6 @@ namespace TeensyFlasher
         {
             ContextMenuStrip contexMenu = new ContextMenuStrip();
             contexMenu.Font = new Font("Microsoft Sans Serif", 14);
-            //contexMenu.Items.Add("Video Tutorial");
             contexMenu.Items.Add("AOGConfig-O-Matic!");
             contexMenu.Items.Add("AgOpenGPS Tools");
             contexMenu.Items.Add("AgOpenGPS videos");
@@ -804,9 +803,6 @@ namespace TeensyFlasher
             ToolStripItem item = e.ClickedItem;
             switch (item.Text)
             {
-                case "Video Tutorial":
-                    System.Diagnostics.Process.Start("https://www.youtube.com/user/lansing9r");
-                    break;
                 case "AgOpenGPS":
                     System.Diagnostics.Process.Start("https://github.com/farmerbriantee/AgOpenGPS");
                     break;
@@ -814,7 +810,7 @@ namespace TeensyFlasher
                     System.Diagnostics.Process.Start("https://github.com/AgHardware");
                     break;
                 case "AgOpenGPS videos":
-                    System.Diagnostics.Process.Start("https://www.youtube.com/user/lansing9r");
+                    System.Diagnostics.Process.Start("https://www.youtube.com/playlist?list=PL1N2N2XFHWW1fIDhb7koOa7hxH0LGppYc");
                     break;
                 case "AOG Discourse":
                     System.Diagnostics.Process.Start("https://discourse.agopengps.com/");
@@ -827,6 +823,8 @@ namespace TeensyFlasher
                     break;
             }
         }
+
+
     }
 
 }
