@@ -73,6 +73,7 @@ namespace TeensyFlasher
             // 
             // tbPages
             // 
+            this.tbPages.Appearance = System.Windows.Forms.TabAppearance.Buttons;
             this.tbPages.Controls.Add(this.tabGPS);
             this.tbPages.Controls.Add(this.tabTeensy);
             this.tbPages.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -86,7 +87,6 @@ namespace TeensyFlasher
             // 
             // tabGPS
             // 
-            this.tabGPS.Controls.Add(this.btnHelp);
             this.tabGPS.Controls.Add(this.pbConfiguration);
             this.tabGPS.Controls.Add(this.pblF9PConfig);
             this.tabGPS.Controls.Add(this.lblFirmwareWarning);
@@ -99,10 +99,10 @@ namespace TeensyFlasher
             this.tabGPS.Controls.Add(this.lbCOMPorts);
             this.tabGPS.Controls.Add(this.btnURefresh);
             this.tabGPS.Controls.Add(this.lblUblox);
-            this.tabGPS.Location = new System.Drawing.Point(4, 45);
+            this.tabGPS.Location = new System.Drawing.Point(4, 48);
             this.tabGPS.Margin = new System.Windows.Forms.Padding(4);
             this.tabGPS.Name = "tabGPS";
-            this.tabGPS.Size = new System.Drawing.Size(963, 670);
+            this.tabGPS.Size = new System.Drawing.Size(963, 667);
             this.tabGPS.TabIndex = 1;
             this.tabGPS.Text = "Ublox";
             this.tabGPS.UseVisualStyleBackColor = true;
@@ -276,11 +276,11 @@ namespace TeensyFlasher
             this.tabTeensy.Controls.Add(this.label2);
             this.tabTeensy.Controls.Add(this.label1);
             this.tabTeensy.Controls.Add(this.lbFirmware);
-            this.tabTeensy.Location = new System.Drawing.Point(4, 45);
+            this.tabTeensy.Location = new System.Drawing.Point(4, 48);
             this.tabTeensy.Margin = new System.Windows.Forms.Padding(4);
             this.tabTeensy.Name = "tabTeensy";
             this.tabTeensy.Padding = new System.Windows.Forms.Padding(4);
-            this.tabTeensy.Size = new System.Drawing.Size(963, 670);
+            this.tabTeensy.Size = new System.Drawing.Size(963, 667);
             this.tabTeensy.TabIndex = 0;
             this.tabTeensy.Text = "Teensy";
             this.tabTeensy.UseVisualStyleBackColor = true;
@@ -382,10 +382,12 @@ namespace TeensyFlasher
             // 
             // btnHelp
             // 
-            this.btnHelp.Location = new System.Drawing.Point(911, 0);
+            this.btnHelp.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnHelp.ForeColor = System.Drawing.Color.Green;
+            this.btnHelp.Location = new System.Drawing.Point(952, 3);
             this.btnHelp.Name = "btnHelp";
             this.btnHelp.Size = new System.Drawing.Size(49, 50);
-            this.btnHelp.TabIndex = 14;
+            this.btnHelp.TabIndex = 15;
             this.btnHelp.Text = "?";
             this.btnHelp.UseVisualStyleBackColor = true;
             this.btnHelp.Click += new System.EventHandler(this.btnHelp_Click);
@@ -395,6 +397,7 @@ namespace TeensyFlasher
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1003, 748);
+            this.Controls.Add(this.btnHelp);
             this.Controls.Add(this.tbPages);
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "frmMain";
