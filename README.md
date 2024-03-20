@@ -13,6 +13,8 @@ People have had issues with various versions of TeensyDuino (specifically, versi
 
 # Flashing GPS/F9P
 
+## All connections are done over USB - remove the Teensy and F9P from the PCB and connect them direct to your computer !!
+
 This tool aims to simplify all that. Go to the Releases section and download the big AOGConfigOMatic zip file, unzip it, and run the AOGConfigOMatic.exe file.
 
 When you run it, you'll see the following:
