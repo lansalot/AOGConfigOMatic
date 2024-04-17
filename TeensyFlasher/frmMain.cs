@@ -21,6 +21,18 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace TeensyFlasher
 {
+    public class TeensyFirmwareItem
+    {
+        public string DisplayText { get; set; }
+        public string Location { get; set; }
+
+        // Constructor
+        public TeensyFirmwareItem(string displayText, string location)
+        {
+            DisplayText = displayText;
+            Location = location;
+        }
+    }
     public partial class frmMain : Form
     {
         private AutoResetEvent _waitForAckNak = new AutoResetEvent(false);
@@ -39,6 +51,8 @@ namespace TeensyFlasher
         private bool isClosing = false;
         private int errorCount = 0;
 
+        private List<TeensyFirmwareItem> teensyFirmwareItems = new List<TeensyFirmwareItem>();
+
         #region Teensy
 
 
@@ -55,11 +69,25 @@ namespace TeensyFlasher
         }
         void UpdateFirmwareBox()
         {
-            // Read the CSV file and fill the listbox with the first column
-            var lines = File.ReadAllLines(localCSV);
-            var firstColumn = lines.Select(line => line.Split(',')[0]).ToList();
-            lbFirmware.DataSource = firstColumn;
+            foreach (var line in File.ReadAllLines(localCSV))
+            {
+                var parts = line.Split(',');
+                teensyFirmwareItems.Add(new TeensyFirmwareItem(parts[0], parts[1]));
+            }
+            var hexFiles = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.hex");
+            foreach (var hexFile in hexFiles)
+            {
+                if (!teensyFirmwareItems.Any(s => s.Location.IndexOf(Path.GetFileName(hexFile)) > -1))
+                {
+                    teensyFirmwareItems.Add(new TeensyFirmwareItem(Path.GetFileName(hexFile), Path.GetFileName(hexFile)));
+                }
+            }
+            lbFirmware.DataSource = teensyFirmwareItems;
+            lbFirmware.DisplayMember = "DisplayText";
+            lbFirmware.ValueMember = "Location";
             lbFirmware.SelectedIndex = -1;
+            // add any *.hex files in current folder to the list
+
         }
         public frmMain()
         {
@@ -772,11 +800,7 @@ namespace TeensyFlasher
 
         private void lbFirmware_SelectedIndexChanged_1(object sender, EventArgs e)
         {
-            var lines = File.ReadAllLines(localCSV);
-            chosenFirmware = lines
-                .Where(line => line.Split(',')[0] == (String)lbFirmware.SelectedValue)
-                .Select(line => line.Split(',')[1])
-                .FirstOrDefault();
+            chosenFirmware = (lbFirmware.SelectedItem as TeensyFirmwareItem)?.Location;
             if (lbFirmware.SelectedIndex > -1 && lbTeensies.SelectedIndex > -1 && lbTeensies.Items.Count > 0)
             {
                 btnProgram.Enabled = true;
@@ -793,6 +817,7 @@ namespace TeensyFlasher
             contexMenu.Items.Add("AgOpenGPS");
             contexMenu.Items.Add("AgHardware");
             contexMenu.Items.Add("AOG Discourse");
+            contexMenu.Items.Add("Donate to AOG!");
             contexMenu.Show(Cursor.Position.X, Cursor.Position.Y);
             contexMenu.ItemClicked += new ToolStripItemClickedEventHandler(
                 contexMenu_ItemClicked);
@@ -820,6 +845,9 @@ namespace TeensyFlasher
                     break;
                 case "AgOpenGPS Tools":
                     System.Diagnostics.Process.Start("https://github.com/lansalot/AgOpenGPS-Tools");
+                    break;
+                case "Donate to AOG!":
+                    System.Diagnostics.Process.Start("https://www.buymeacoffee.com/agopengps");
                     break;
             }
         }
