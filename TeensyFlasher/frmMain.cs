@@ -69,10 +69,15 @@ namespace TeensyFlasher
         }
         void UpdateFirmwareBox()
         {
-            foreach (var line in File.ReadAllLines(localCSV))
+            lbFirmware.DataSource = null;
+            teensyFirmwareItems.Clear();
+            if (File.Exists(localCSV))
             {
-                var parts = line.Split(',');
-                teensyFirmwareItems.Add(new TeensyFirmwareItem(parts[0], parts[1]));
+                foreach (var line in File.ReadAllLines(localCSV))
+                {
+                    var parts = line.Split(',');
+                    teensyFirmwareItems.Add(new TeensyFirmwareItem(parts[0], parts[1]));
+                }
             }
             var hexFiles = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.hex");
             foreach (var hexFile in hexFiles)
@@ -86,6 +91,7 @@ namespace TeensyFlasher
             lbFirmware.DisplayMember = "DisplayText";
             lbFirmware.ValueMember = "Location";
             lbFirmware.SelectedIndex = -1;
+            lbFirmware.Refresh();
             // add any *.hex files in current folder to the list
 
         }
@@ -99,10 +105,7 @@ namespace TeensyFlasher
                 lbTeensies.Items.Add(teensy);
             }
             if (lbTeensies.Items.Count > 0) lbTeensies.SelectedIndex = 0;
-            if (File.Exists(localCSV))
-            {
-                UpdateFirmwareBox();
-            }
+            UpdateFirmwareBox();
         }
 
         private void ConnectedTeensiesChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -161,7 +164,7 @@ namespace TeensyFlasher
         }
         private void btnRefreshTeensy_Click(object sender, EventArgs e)
         {
-            string url = "https://raw.githubusercontent.com/lansalot/AOGConfigOMatic/main/Firmwares.csv";
+            string url = "https://raw.githubusercontent.com/lansalot/AOGConfigOMatic/main/TeensyFlasher/Firmwares.csv";
             DownloadFile(url, localCSV);
             UpdateFirmwareBox();
         }
