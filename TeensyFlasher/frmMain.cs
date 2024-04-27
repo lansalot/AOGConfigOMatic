@@ -21,18 +21,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace TeensyFlasher
 {
-    public class TeensyFirmwareItem
-    {
-        public string DisplayText { get; set; }
-        public string Location { get; set; }
 
-        // Constructor
-        public TeensyFirmwareItem(string displayText, string location)
-        {
-            DisplayText = displayText;
-            Location = location;
-        }
-    }
     public partial class frmMain : Form
     {
         private AutoResetEvent _waitForAckNak = new AutoResetEvent(false);
@@ -858,4 +847,16 @@ namespace TeensyFlasher
 
     }
 
+    public class TeensyFirmwareItem
+    {
+        public string DisplayText { get; set; }
+        public string Location { get; set; }
+
+        // Constructor
+        public TeensyFirmwareItem(string displayText, string location)
+        {
+            DisplayText = displayText;
+            Location = location;
+        }
+    }
 }
