@@ -55,8 +55,10 @@ If anything goes wrong, make sure you don't have the Arduino IDE open or anythin
 
 # How it works, and adding your own custom images for Teensy
 
-Out of the box, the app doesn't know about any images, or where to find them. That's why it comes up empty and advises you to press Refresh.
+From the start, the app will load any present any HEX files found in the same directory as the app - so you can simply add your own images by dropping them in that folder. Give them descriptive names so you know what's-what.
 
-When you do that, it'll connect to this repository and pull the CSV file and store it in the same folder as the app, populating the listbox with the entries in it. If you edit that CSV file, you can add your own firmwares to the list - just don't press Refresh again and it won't get overwritten by the original !
+For the online/libray stuff, out of the box, the app doesn't know about any "official" images, or where to find them. That's why it comes up empty (if you didn't drop any custom ones) and advises you to press Refresh.
 
-If the HEX file you want to flash isn't also in the same folder as the app, it'll pull it from the repo and cache it there. Once it has the CSV and the HEX files you're interested in, it will never need internet access again (until you press Refresh again of course). So this means that if you edit the CSV, and place additional HEX files in the folder, you can customise the list with your own local firmware images.
+When you do that, it'll connect to this repository and pull the CSV file and store it in the same folder as the app, populating the listbox with the entries in it.
+
+If the HEX file you want to flash isn't also in the same folder as the app, it'll pull it from the repo and cache it there. Once it has the CSV and the HEX files you're interested in, it will never need internet access again (until you press Refresh again of course).
