@@ -129,7 +129,7 @@
     </Content>
     <Content Include="teensyflasher.ico" />
     <Content Include="ConfigUM982.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="ubxfwupdate.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
