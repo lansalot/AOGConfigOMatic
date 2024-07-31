@@ -153,7 +153,7 @@ namespace TeensyFlasher
         }
         private void btnRefreshTeensy_Click(object sender, EventArgs e)
         {
-            string url = "https://raw.githubusercontent.com/lansalot/AOGConfigOMatic/main/Firmwares.csv";
+            string url = "https://raw.githubusercontent.com/lansalot/AOGConfigOMatic/main/TeensyFlasher/Firmwares.csv";
             DownloadFile(url, localCSV);
             UpdateFirmwareBox();
         }
