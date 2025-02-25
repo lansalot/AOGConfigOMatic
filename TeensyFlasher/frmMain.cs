@@ -244,15 +244,30 @@ namespace TeensyFlasher
             {
                 StopReadingData();
                 btnConnect.Text = "Connect";
+                tmrMessages.Stop();
             }
             else
             {
+                txtSerialChat.Clear();
+                // find location in string
+                if (sender.ToString().IndexOf("Timer") > 0)
+                {
+                    txtSerialChat.AppendText("No messages received - trying Xbee mode!" + Environment.NewLine);
+                }
+                tmrMessages.Start();
                 if (lbCOMPorts.SelectedIndex == -1)
                 {
                     txtSerialChat.AppendText("Please select a COM port" + Environment.NewLine);
                     return;
                 }
-                _serialPort = new SerialPort(SelectedComPort, 460800, Parity.None, 8, StopBits.One);
+                if (pbXbee.BackColor == Color.Red)
+                {
+                    _serialPort = new SerialPort(SelectedComPort, 460800, Parity.None, 8, StopBits.One);
+                } else
+                {
+                    _serialPort = new SerialPort(SelectedComPort, 38400, Parity.None, 8, StopBits.One);
+                }
+
                 try
                 {
                     _serialPort.Open();
@@ -402,7 +417,11 @@ namespace TeensyFlasher
                 if (ubxMessage && _ubxParseBuffer[2] == 0x0A && _ubxParseBuffer[3] == 0x04)
                 {
                     int length = buf[i + 1];
-                    length |= buf[i + 2] << 8;
+                    try
+                    {
+                        length |= buf[i + 2] << 8;
+                    }
+                    catch { }
 
                     var verIndex = i + 3;
                     var payloadEnd = verIndex + length - 1;
@@ -744,9 +763,15 @@ namespace TeensyFlasher
                 StopReadingData();
                 btnConnect.Text = "Connect";
             }
-
             var batchFile = Path.GetTempPath() + "flashf9p.bat";
-            File.WriteAllText(batchFile, "ubxfwupdate -p \\\\.\\" + SelectedComPort + " -b 460800:9600:460800 --no-fis 1 -s 0 -t 0 -v 1 UBX113.bin");
+            if (pbXbee.BackColor == Color.Red)
+            {
+             File.WriteAllText(batchFile, "ubxfwupdate -p \\\\.\\" + SelectedComPort + " -b 460800:9600:460800 --no-fis 1 -s 0 -t 0 -v 1 UBX113.bin");
+            }
+            else
+            {
+                File.WriteAllText(batchFile, "ubxfwupdate -p \\\\.\\" + SelectedComPort + " -b 38400:38400:460800 --no-fis 1 -s 0 -t 0 -v 1 UBX113.bin");
+            }
             File.AppendAllText(batchFile, "\r\npause");
 
             txtSerialChat.AppendText("Flashing F9P firmware" + Environment.NewLine);
@@ -773,6 +798,12 @@ namespace TeensyFlasher
                 return;
             }
             ConfigureReceiver(_FileName);
+            if (pbXbee.BackColor == Color.Red)
+            {
+                _serialPort.BaudRate = 460800;
+                pbXbee.BackColor = Color.Green;
+                btnConnect_Click(sender, e);
+            }
         }
 
         private void rbSingleF9P_CheckedChanged(object sender, EventArgs e)
@@ -1050,14 +1081,27 @@ namespace TeensyFlasher
 
         #endregion
 
-        private void tabGPS_Click(object sender, EventArgs e)
+        private void pbXbee_Click(object sender, EventArgs e)
         {
-
+            if (pbXbee.BackColor == Color.Red)
+            {
+                pbXbee.BackColor = Color.Green;
+            }
+            else
+            {
+                pbXbee.BackColor = Color.Red;
+            }
         }
 
-        private void txtSerialChat_TextChanged(object sender, EventArgs e)
+        private void tmrMessages_Tick(object sender, EventArgs e)
         {
-
+            if (txtMessages.Text.Length < 100)
+            {
+                tmrMessages.Stop();
+                pbXbee.BackColor = Color.Green;
+                btnConnect_Click(this, e);
+                btnConnect_Click(sender, e);
+            }
         }
     }
 

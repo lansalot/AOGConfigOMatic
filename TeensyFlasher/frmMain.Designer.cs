@@ -37,8 +37,11 @@ namespace TeensyFlasher
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.tbPages = new System.Windows.Forms.TabControl();
             this.tabGPS = new System.Windows.Forms.TabPage();
+            this.pbXbee = new System.Windows.Forms.PictureBox();
             this.pbConfiguration = new System.Windows.Forms.ProgressBar();
             this.pblF9PConfig = new System.Windows.Forms.Panel();
             this.rbDualRelPos = new System.Windows.Forms.RadioButton();
@@ -65,14 +68,16 @@ namespace TeensyFlasher
             this.label1 = new System.Windows.Forms.Label();
             this.lbFirmware = new System.Windows.Forms.ListBox();
             this.tabUM982 = new System.Windows.Forms.TabPage();
+            this.btnConfigUM982 = new System.Windows.Forms.Button();
             this.txtSerialChatUM982 = new System.Windows.Forms.TextBox();
             this.btnConnectUM982 = new System.Windows.Forms.Button();
             this.lbCOMPortsUM982 = new System.Windows.Forms.ListBox();
             this.btnURefreshUM982 = new System.Windows.Forms.Button();
             this.btnHelp = new System.Windows.Forms.Button();
-            this.btnConfigUM982 = new System.Windows.Forms.Button();
+            this.tmrMessages = new System.Windows.Forms.Timer(this.components);
             this.tbPages.SuspendLayout();
             this.tabGPS.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbXbee)).BeginInit();
             this.pblF9PConfig.SuspendLayout();
             this.tabTeensy.SuspendLayout();
             this.tabUM982.SuspendLayout();
@@ -94,6 +99,7 @@ namespace TeensyFlasher
             // 
             // tabGPS
             // 
+            this.tabGPS.Controls.Add(this.pbXbee);
             this.tabGPS.Controls.Add(this.pbConfiguration);
             this.tabGPS.Controls.Add(this.pblF9PConfig);
             this.tabGPS.Controls.Add(this.lblFirmwareWarning);
@@ -112,7 +118,21 @@ namespace TeensyFlasher
             this.tabGPS.TabIndex = 1;
             this.tabGPS.Text = "Ublox";
             this.tabGPS.UseVisualStyleBackColor = true;
-            this.tabGPS.Click += new System.EventHandler(this.tabGPS_Click);
+            // 
+            // pbXbee
+            // 
+            this.pbXbee.BackColor = System.Drawing.Color.Red;
+            this.pbXbee.BackgroundImage = global::AOGConfigOMatic.Properties.Resources.xbee;
+            this.pbXbee.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.pbXbee.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.pbXbee.InitialImage = ((System.Drawing.Image)(resources.GetObject("pbXbee.InitialImage")));
+            this.pbXbee.Location = new System.Drawing.Point(302, 2);
+            this.pbXbee.Margin = new System.Windows.Forms.Padding(2);
+            this.pbXbee.Name = "pbXbee";
+            this.pbXbee.Size = new System.Drawing.Size(165, 108);
+            this.pbXbee.TabIndex = 14;
+            this.pbXbee.TabStop = false;
+            this.pbXbee.Click += new System.EventHandler(this.pbXbee_Click);
             // 
             // pbConfiguration
             // 
@@ -211,7 +231,7 @@ namespace TeensyFlasher
             // lblFirmware
             // 
             this.lblFirmware.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblFirmware.Location = new System.Drawing.Point(490, 78);
+            this.lblFirmware.Location = new System.Drawing.Point(490, 63);
             this.lblFirmware.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblFirmware.Name = "lblFirmware";
             this.lblFirmware.Size = new System.Drawing.Size(230, 206);
@@ -251,7 +271,6 @@ namespace TeensyFlasher
             this.txtSerialChat.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtSerialChat.Size = new System.Drawing.Size(680, 232);
             this.txtSerialChat.TabIndex = 4;
-            this.txtSerialChat.TextChanged += new System.EventHandler(this.txtSerialChat_TextChanged);
             // 
             // lbCOMPorts
             // 
@@ -315,7 +334,7 @@ namespace TeensyFlasher
             this.lbTeensies.Location = new System.Drawing.Point(100, 232);
             this.lbTeensies.Margin = new System.Windows.Forms.Padding(2);
             this.lbTeensies.Name = "lbTeensies";
-            this.lbTeensies.Size = new System.Drawing.Size(357, 44);
+            this.lbTeensies.Size = new System.Drawing.Size(357, 24);
             this.lbTeensies.TabIndex = 19;
             // 
             // pbProgram
@@ -401,7 +420,7 @@ namespace TeensyFlasher
             this.lbFirmware.Location = new System.Drawing.Point(16, 60);
             this.lbFirmware.Margin = new System.Windows.Forms.Padding(2);
             this.lbFirmware.Name = "lbFirmware";
-            this.lbFirmware.Size = new System.Drawing.Size(690, 164);
+            this.lbFirmware.Size = new System.Drawing.Size(690, 144);
             this.lbFirmware.TabIndex = 11;
             this.lbFirmware.SelectedIndexChanged += new System.EventHandler(this.lbFirmware_SelectedIndexChanged_1);
             // 
@@ -419,6 +438,18 @@ namespace TeensyFlasher
             this.tabUM982.TabIndex = 2;
             this.tabUM982.Text = "UM982";
             this.tabUM982.UseVisualStyleBackColor = true;
+            // 
+            // btnConfigUM982
+            // 
+            this.btnConfigUM982.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnConfigUM982.Location = new System.Drawing.Point(153, 107);
+            this.btnConfigUM982.Margin = new System.Windows.Forms.Padding(2);
+            this.btnConfigUM982.Name = "btnConfigUM982";
+            this.btnConfigUM982.Size = new System.Drawing.Size(120, 41);
+            this.btnConfigUM982.TabIndex = 11;
+            this.btnConfigUM982.Text = "Configure UM982";
+            this.btnConfigUM982.UseVisualStyleBackColor = true;
+            this.btnConfigUM982.Click += new System.EventHandler(this.btnConfigUM982_Click);
             // 
             // txtSerialChatUM982
             // 
@@ -451,7 +482,7 @@ namespace TeensyFlasher
             this.lbCOMPortsUM982.Location = new System.Drawing.Point(14, 17);
             this.lbCOMPortsUM982.Margin = new System.Windows.Forms.Padding(2);
             this.lbCOMPortsUM982.Name = "lbCOMPortsUM982";
-            this.lbCOMPortsUM982.Size = new System.Drawing.Size(121, 144);
+            this.lbCOMPortsUM982.Size = new System.Drawing.Size(121, 124);
             this.lbCOMPortsUM982.TabIndex = 8;
             this.lbCOMPortsUM982.SelectedIndexChanged += new System.EventHandler(this.lbCOMPortsUM982_SelectedIndexChanged);
             // 
@@ -480,17 +511,10 @@ namespace TeensyFlasher
             this.btnHelp.UseVisualStyleBackColor = true;
             this.btnHelp.Click += new System.EventHandler(this.btnHelp_Click);
             // 
-            // btnConfigUM982
+            // tmrMessages
             // 
-            this.btnConfigUM982.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnConfigUM982.Location = new System.Drawing.Point(153, 107);
-            this.btnConfigUM982.Margin = new System.Windows.Forms.Padding(2);
-            this.btnConfigUM982.Name = "btnConfigUM982";
-            this.btnConfigUM982.Size = new System.Drawing.Size(120, 41);
-            this.btnConfigUM982.TabIndex = 11;
-            this.btnConfigUM982.Text = "Configure UM982";
-            this.btnConfigUM982.UseVisualStyleBackColor = true;
-            this.btnConfigUM982.Click += new System.EventHandler(this.btnConfigUM982_Click);
+            this.tmrMessages.Interval = 5000;
+            this.tmrMessages.Tick += new System.EventHandler(this.tmrMessages_Tick);
             // 
             // frmMain
             // 
@@ -506,6 +530,7 @@ namespace TeensyFlasher
             this.tbPages.ResumeLayout(false);
             this.tabGPS.ResumeLayout(false);
             this.tabGPS.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbXbee)).EndInit();
             this.pblF9PConfig.ResumeLayout(false);
             this.pblF9PConfig.PerformLayout();
             this.tabTeensy.ResumeLayout(false);
@@ -551,6 +576,8 @@ namespace TeensyFlasher
         private Button btnURefreshUM982;
         private TextBox txtSerialChatUM982;
         private Button btnConfigUM982;
+        private PictureBox pbXbee;
+        private System.Windows.Forms.Timer tmrMessages;
     }
 }
 

@@ -124,6 +124,7 @@
     <Content Include="libUsbTree.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\xbee.jpg" />
     <Content Include="Single.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
