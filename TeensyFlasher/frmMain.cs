@@ -1038,6 +1038,14 @@ namespace TeensyFlasher
             try
             {
                 // get receiver configuration file
+                if (btnUMDual.Checked)
+                {
+                    configurationFilenameUM982 = ".\\ConfigUM982D.txt";
+                }
+                else
+                {
+                    configurationFilenameUM982 = ".\\ConfigUM982S.txt";
+                }
                 lines = File.ReadAllLines(configurationFilenameUM982);
             }
             catch (Exception ex)
@@ -1095,13 +1103,18 @@ namespace TeensyFlasher
 
         private void tmrMessages_Tick(object sender, EventArgs e)
         {
-            if (txtMessages.Text.Length < 100)
+            if (txtSerialChat.Text.Length < 50)
             {
                 tmrMessages.Stop();
                 pbXbee.BackColor = Color.Green;
                 btnConnect_Click(this, e);
                 btnConnect_Click(sender, e);
             }
+        }
+
+        private void radioButton1_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
     }
 
