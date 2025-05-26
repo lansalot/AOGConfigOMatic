@@ -26,8 +26,8 @@ namespace AOGConfigOMatic
         // 10 byte receive buffer for UBX and AOG messages. Only used to read the first few bytes.
         private readonly byte[] _ubxParseBuffer = new byte[10];
         private int _ubxParseIndex = 0;
-        private string SelectedComPort;
-        private SerialPort _serialPort = null;
+        private string? SelectedComPort;
+        private SerialPort? _serialPort = null;
         private bool isReadingData = false;
         private string _FileName = ".\\Single.txt";
         private bool isProgrammingF9P = false;
@@ -490,7 +490,7 @@ namespace AOGConfigOMatic
             btnConnect.Enabled = false;
             btnF9PFlashFirmware.Enabled = false;
             btnURefresh.Enabled = false;
-            string[] lines = null;
+            string[]? lines = null;
 
             try
             {
@@ -524,7 +524,7 @@ namespace AOGConfigOMatic
                     //System.Diagnostics.Debug.WriteLine($"Received bytes : {monBuf.Length}");
                     //System.Diagnostics.Debug.WriteLine(BitConverter.ToString(monBuf));
 
-                    _serialPort.DataReceived += MySerialPort_DataReceived;
+                    _serialPort!.DataReceived += MySerialPort_DataReceived;
 
                     //Thread.Sleep(1000);
 
@@ -615,7 +615,7 @@ namespace AOGConfigOMatic
             UbxCalculateCheckSum(msgBytes);
 
             _ack = false;
-            _serialPort.Write(msgBytes, 0, msgBytes.Length);
+            _serialPort!.Write(msgBytes, 0, msgBytes.Length);
             _serialPort.Write(msgBytes, 0, msgBytes.Length);
             _serialPort.Write(msgBytes, 0, msgBytes.Length);
             _serialPort.Write(msgBytes, 0, msgBytes.Length);
@@ -782,7 +782,7 @@ namespace AOGConfigOMatic
 
         private void lbFirmware_SelectedIndexChanged_1(object sender, EventArgs e)
         {
-            chosenFirmware = (lbFirmware.SelectedItem as TeensyFirmwareItem)?.Location;
+            chosenFirmware = ((TeensyFirmwareItem)lbFirmware.SelectedItem).Location;
             if (lbFirmware.SelectedIndex > -1 && lbTeensies.SelectedIndex > -1 && lbTeensies.Items.Count > 0)
             {
                 btnProgram.Enabled = true;
@@ -985,7 +985,7 @@ namespace AOGConfigOMatic
             btnConfigUM982.Enabled = false;
             btnConnectUM982.Enabled = false;
             btnURefreshUM982.Enabled = false;
-            string[] lines = null;
+            string[]? lines = null;
 
             try
             {
@@ -1002,7 +1002,7 @@ namespace AOGConfigOMatic
             {
                 try
                 {
-                    _serialPort.DataReceived += MySerialPort_DataReceived;
+                    _serialPort!.DataReceived += MySerialPort_DataReceived;
 
                     SafeChatUM982("Configuring:");
 
