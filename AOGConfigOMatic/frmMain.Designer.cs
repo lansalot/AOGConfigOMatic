@@ -37,6 +37,7 @@ namespace AOGConfigOMatic
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.tbPages = new System.Windows.Forms.TabControl();
             this.tabGPS = new System.Windows.Forms.TabPage();
             this.pbConfiguration = new System.Windows.Forms.ProgressBar();
@@ -65,12 +66,12 @@ namespace AOGConfigOMatic
             this.label1 = new System.Windows.Forms.Label();
             this.lbFirmware = new System.Windows.Forms.ListBox();
             this.tabUM982 = new System.Windows.Forms.TabPage();
+            this.btnConfigUM982 = new System.Windows.Forms.Button();
             this.txtSerialChatUM982 = new System.Windows.Forms.TextBox();
             this.btnConnectUM982 = new System.Windows.Forms.Button();
             this.lbCOMPortsUM982 = new System.Windows.Forms.ListBox();
             this.btnURefreshUM982 = new System.Windows.Forms.Button();
             this.btnHelp = new System.Windows.Forms.Button();
-            this.btnConfigUM982 = new System.Windows.Forms.Button();
             this.tbPages.SuspendLayout();
             this.tabGPS.SuspendLayout();
             this.pblF9PConfig.SuspendLayout();
@@ -420,6 +421,18 @@ namespace AOGConfigOMatic
             this.tabUM982.Text = "UM982";
             this.tabUM982.UseVisualStyleBackColor = true;
             // 
+            // btnConfigUM982
+            // 
+            this.btnConfigUM982.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnConfigUM982.Location = new System.Drawing.Point(153, 107);
+            this.btnConfigUM982.Margin = new System.Windows.Forms.Padding(2);
+            this.btnConfigUM982.Name = "btnConfigUM982";
+            this.btnConfigUM982.Size = new System.Drawing.Size(120, 41);
+            this.btnConfigUM982.TabIndex = 11;
+            this.btnConfigUM982.Text = "Configure UM982";
+            this.btnConfigUM982.UseVisualStyleBackColor = true;
+            this.btnConfigUM982.Click += new System.EventHandler(this.btnConfigUM982_Click);
+            // 
             // txtSerialChatUM982
             // 
             this.txtSerialChatUM982.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -480,18 +493,6 @@ namespace AOGConfigOMatic
             this.btnHelp.UseVisualStyleBackColor = true;
             this.btnHelp.Click += new System.EventHandler(this.btnHelp_Click);
             // 
-            // btnConfigUM982
-            // 
-            this.btnConfigUM982.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnConfigUM982.Location = new System.Drawing.Point(153, 107);
-            this.btnConfigUM982.Margin = new System.Windows.Forms.Padding(2);
-            this.btnConfigUM982.Name = "btnConfigUM982";
-            this.btnConfigUM982.Size = new System.Drawing.Size(120, 41);
-            this.btnConfigUM982.TabIndex = 11;
-            this.btnConfigUM982.Text = "Configure UM982";
-            this.btnConfigUM982.UseVisualStyleBackColor = true;
-            this.btnConfigUM982.Click += new System.EventHandler(this.btnConfigUM982_Click);
-            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -499,9 +500,10 @@ namespace AOGConfigOMatic
             this.ClientSize = new System.Drawing.Size(752, 608);
             this.Controls.Add(this.btnHelp);
             this.Controls.Add(this.tbPages);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "frmMain";
-            this.Text = "agOpenGPS Teensy Flasher";
+            this.Text = "AOGConfig-O-Matic!";
             this.Load += new System.EventHandler(this.frmMain_Load);
             this.tbPages.ResumeLayout(false);
             this.tabGPS.ResumeLayout(false);
