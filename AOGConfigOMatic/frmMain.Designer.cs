@@ -113,7 +113,6 @@ namespace AOGConfigOMatic
             this.tabGPS.TabIndex = 1;
             this.tabGPS.Text = "Ublox";
             this.tabGPS.UseVisualStyleBackColor = true;
-            this.tabGPS.Click += new System.EventHandler(this.tabGPS_Click);
             // 
             // pbConfiguration
             // 
@@ -252,7 +251,6 @@ namespace AOGConfigOMatic
             this.txtSerialChat.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtSerialChat.Size = new System.Drawing.Size(680, 232);
             this.txtSerialChat.TabIndex = 4;
-            this.txtSerialChat.TextChanged += new System.EventHandler(this.txtSerialChat_TextChanged);
             // 
             // lbCOMPorts
             // 

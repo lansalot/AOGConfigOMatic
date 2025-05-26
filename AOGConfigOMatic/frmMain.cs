@@ -3,8 +3,6 @@ using lunOptics.libTeensySharp;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
@@ -14,24 +12,19 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml.Linq;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-
 
 namespace AOGConfigOMatic
 {
-
     public partial class frmMain : Form
     {
-        private AutoResetEvent _waitForAckNak = new AutoResetEvent(false);
-        private AutoResetEvent _waitForMonVer = new AutoResetEvent(false);
+        private readonly AutoResetEvent _waitForAckNak = new AutoResetEvent(false);
+        private readonly AutoResetEvent _waitForMonVer = new AutoResetEvent(false);
         private bool _ack = false;
         private string _monVerString = string.Empty;
 
         // 10 byte receive buffer for UBX and AOG messages. Only used to read the first few bytes.
-        private byte[] _ubxParseBuffer = new byte[10];
+        private readonly byte[] _ubxParseBuffer = new byte[10];
         private int _ubxParseIndex = 0;
         private string SelectedComPort;
         private SerialPort _serialPort = null;
@@ -42,26 +35,26 @@ namespace AOGConfigOMatic
         private int errorCount = 0;
 
         private bool isProgrammingUM982 = false;
-        private string configurationFilenameUM982 = ".\\ConfigUM982.txt";
+        private readonly string configurationFilenameUM982 = ".\\ConfigUM982.txt";
         private string rcvDataUM982 = string.Empty;
 
-        private List<TeensyFirmwareItem> teensyFirmwareItems = new List<TeensyFirmwareItem>();
+        private readonly List<TeensyFirmwareItem> teensyFirmwareItems = new List<TeensyFirmwareItem>();
 
         #region Teensy
 
+        private readonly TeensyWatcher watcher;
+        private readonly string localCSV = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Firmwares.csv");
+        private readonly string localHexStub = AppDomain.CurrentDomain.BaseDirectory;
+        private string chosenFirmware = "";
 
-        TeensyWatcher watcher;
-        String localCSV = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Firmwares.csv");
-        string localHexStub = AppDomain.CurrentDomain.BaseDirectory;
-        string chosenFirmware = "";
-
-        void LogMessage(string Text)
+        private void LogMessage(string Text)
         {
             txtMessages.Text += Text + "\r\n";
             txtMessages.SelectionStart = txtMessages.Text.Length;
             txtMessages.ScrollToCaret();
         }
-        void UpdateFirmwareBox()
+
+        private void UpdateFirmwareBox()
         {
             lbFirmware.DataSource = null;
             teensyFirmwareItems.Clear();
@@ -87,8 +80,8 @@ namespace AOGConfigOMatic
             lbFirmware.SelectedIndex = -1;
             lbFirmware.Refresh();
             // add any *.hex files in current folder to the list
-
         }
+
         public frmMain()
         {
             InitializeComponent();
@@ -133,6 +126,7 @@ namespace AOGConfigOMatic
                 }
             }
         }
+
         private void frmMain_Load(object sender, EventArgs e)
         {
             btnProgram.Enabled = false;
@@ -141,7 +135,7 @@ namespace AOGConfigOMatic
             ScanPortsUM982();
         }
 
-        bool DownloadFile(string url, string localFile)
+        private bool DownloadFile(string url, string localFile)
         {
             try
             {
@@ -158,6 +152,7 @@ namespace AOGConfigOMatic
                 return false;
             }
         }
+
         private void btnRefreshTeensy_Click(object sender, EventArgs e)
         {
             string url = "https://raw.githubusercontent.com/lansalot/AOGConfigOMatic/main/AOGConfigOMatic/Firmwares.csv";
@@ -167,7 +162,7 @@ namespace AOGConfigOMatic
 
         private async void btnProgramTeensy_Click(object sender, EventArgs e)
         {
-            string localHexFile = System.IO.Path.Combine(localHexStub, Path.GetFileName(chosenFirmware));
+            string localHexFile = Path.Combine(localHexStub, Path.GetFileName(chosenFirmware));
             if (!File.Exists(localHexFile))
             {
                 LogMessage("Firmware file not found locally.. downloading");
@@ -179,8 +174,7 @@ namespace AOGConfigOMatic
                 return;
             }
             LogMessage("Programming!");
-            var teensy = lbTeensies.SelectedItem as ITeensy;
-            if (teensy != null)
+            if (lbTeensies.SelectedItem is ITeensy teensy)
             {
                 var progress = new Progress<int>(v => pbProgram.Value = v);
                 var result = await teensy.UploadAsync(localHexFile, progress);
@@ -203,9 +197,7 @@ namespace AOGConfigOMatic
         }
         #endregion
 
-
         #region UBlox
-
 
         private void StopReadingData()
         {
@@ -225,6 +217,7 @@ namespace AOGConfigOMatic
                 }
             }
         }
+
         private void ScanPorts()
         {
             var ports = SerialPort.GetPortNames().ToList();
@@ -234,10 +227,12 @@ namespace AOGConfigOMatic
                 lbCOMPorts.Items.Add(port);
             }
         }
+
         private void btnURefresh_Click(object sender, EventArgs e)
         {
             ScanPorts();
         }
+
         private void btnConnect_Click(object sender, EventArgs e)
         {
             if (isReadingData)
@@ -259,7 +254,7 @@ namespace AOGConfigOMatic
                 }
                 catch
                 {
-                    safeChat("Error opening serial port - make sure anything using it (U-Center?) is closed!");
+                    SafeChat("Error opening serial port - make sure anything using it (U-Center?) is closed!");
                     return;
                 }
                 btnConnect.Text = "Disconnect";
@@ -284,7 +279,7 @@ namespace AOGConfigOMatic
             }
         }
 
-        private void safeChat(string chat)
+        private void SafeChat(string chat)
         {
             if (isClosing) { return; }
             txtSerialChat.Invoke(new MethodInvoker(delegate
@@ -292,6 +287,7 @@ namespace AOGConfigOMatic
                 txtSerialChat.AppendText(chat + Environment.NewLine);
             }));
         }
+
         private void MySerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             SerialPort spL = (SerialPort)sender;
@@ -309,7 +305,7 @@ namespace AOGConfigOMatic
                 {
                     if (!spL.IsOpen)
                     {
-                        safeChat(".");
+                        SafeChat(".");
                         spL.Open();
                         break;
                     }
@@ -320,20 +316,20 @@ namespace AOGConfigOMatic
                 }
                 catch
                 {
-                    safeChat("Sleeping " + retries.ToString());
+                    SafeChat("Sleeping " + retries.ToString());
                 }
                 retries++;
                 Thread.Sleep(100);
                 if (retries > 10)
                 {
-                    safeChat("Failed to re-open serial port - retry " + retries.ToString());
+                    SafeChat("Failed to re-open serial port - retry " + retries.ToString());
                     break;
                 }
             }
             if (!spL.IsOpen)
             {
                 // sometimes the port closes, for some reason...
-                safeChat("Serial port closed unexpectedly - please try again!");
+                SafeChat("Serial port closed unexpectedly - please try again!");
                 return;
             }
             buf = new byte[spL.BytesToRead];
@@ -349,7 +345,7 @@ namespace AOGConfigOMatic
                     try
                     {
                         var nmea = Encoding.UTF8.GetString(buf, i, Array.IndexOf(buf, (byte)0x0a) - 1);
-                        safeChat("NMEA: " + nmea);
+                        SafeChat("NMEA: " + nmea);
                     }
                     catch { }
                 }
@@ -391,10 +387,10 @@ namespace AOGConfigOMatic
                         _waitForAckNak.Set();
                         ResetUbxBuffer();
                     }
-                    System.Diagnostics.Debug.WriteLine("Dumping buf with _ack state " + _ack.ToString());
-                    System.Diagnostics.Debug.WriteLine(BitConverter.ToString(buf));
-                    System.Diagnostics.Debug.WriteLine("Dumping _ubxParseBuffer");
-                    System.Diagnostics.Debug.WriteLine(BitConverter.ToString(_ubxParseBuffer));
+                    Debug.WriteLine("Dumping buf with _ack state " + _ack.ToString());
+                    Debug.WriteLine(BitConverter.ToString(buf));
+                    Debug.WriteLine("Dumping _ubxParseBuffer");
+                    Debug.WriteLine(BitConverter.ToString(_ubxParseBuffer));
                 }
 
                 // Check the Class and Message id, byte 2 and 3
@@ -469,7 +465,7 @@ namespace AOGConfigOMatic
 
                         // no ubxMessage yet
                         ubxMessage = false;
-                        System.Diagnostics.Debug.WriteLine("Signaling thread for MON-VER");
+                        Debug.WriteLine("Signaling thread for MON-VER");
 
                         //_waitForAckNak.Set();
 
@@ -532,7 +528,7 @@ namespace AOGConfigOMatic
 
                     //Thread.Sleep(1000);
 
-                    safeChat("Configuring:");
+                    SafeChat("Configuring:");
 
                     // Skip the first line of the file, that is the version
                     int progress = 1;
@@ -559,7 +555,7 @@ namespace AOGConfigOMatic
                                 {
                                     if (errorCount > 5)
                                     {
-                                        safeChat("Too many errors, aborting");
+                                        SafeChat("Too many errors, aborting");
                                         throw new Exception("Too many errors");
                                     }
                                 }
@@ -570,11 +566,11 @@ namespace AOGConfigOMatic
                     {
                         pbConfiguration.Value = 0;
                     }));
-                    safeChat("Configuring receiver done");
+                    SafeChat("Configuring receiver done");
                 }
                 catch (Exception ex)
                 {
-                    safeChat("Error sending configuration to receiver" + Environment.NewLine + ex.ToString());
+                    SafeChat("Error sending configuration to receiver" + Environment.NewLine + ex.ToString());
                 }
                 finally
                 {
@@ -638,16 +634,16 @@ namespace AOGConfigOMatic
             }
             else
             {
-                safeChat("Timeout waiting for ACK on:");
-                System.Diagnostics.Debug.WriteLine(BitConverter.ToString(msgBytes));
+                SafeChat("Timeout waiting for ACK on:");
+                Debug.WriteLine(BitConverter.ToString(msgBytes));
                 return false;
             }
         }
 
         #endregion
 
-
         #region ubloxhelpers
+
         private void ResetUbxBuffer()
         {
             for (var i = 0; i < _ubxParseBuffer.Length; i++)
@@ -698,22 +694,7 @@ namespace AOGConfigOMatic
                 Console.WriteLine($"{hexSection,-41} {asciiSection}");
             }
         }
-        private static byte[] ConvertHexStringToByteArray(string hexString)
-        {
-            if (hexString.Length % 2 != 0)
-            {
-                throw new ArgumentException(String.Format(CultureInfo.InvariantCulture, "The binary key cannot have an odd number of digits: {0}", hexString));
-            }
 
-            byte[] data = new byte[hexString.Length / 2];
-            for (int index = 0; index < data.Length; index++)
-            {
-                string byteValue = hexString.Substring(index * 2, 2);
-                data[index] = byte.Parse(byteValue, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-            }
-
-            return data;
-        }
         #endregion
 
         private void tbPages_SelectedIndexChanged(object sender, EventArgs e)
@@ -830,25 +811,25 @@ namespace AOGConfigOMatic
             switch (item.Text)
             {
                 case "AgOpenGPS":
-                    System.Diagnostics.Process.Start("https://github.com/farmerbriantee/AgOpenGPS");
+                    Process.Start("https://github.com/farmerbriantee/AgOpenGPS");
                     break;
                 case "AgHardware":
-                    System.Diagnostics.Process.Start("https://github.com/AgHardware");
+                    Process.Start("https://github.com/AgHardware");
                     break;
                 case "AgOpenGPS videos":
-                    System.Diagnostics.Process.Start("https://www.youtube.com/playlist?list=PL1N2N2XFHWW1fIDhb7koOa7hxH0LGppYc");
+                    Process.Start("https://www.youtube.com/playlist?list=PL1N2N2XFHWW1fIDhb7koOa7hxH0LGppYc");
                     break;
                 case "AOG Discourse":
-                    System.Diagnostics.Process.Start("https://discourse.agopengps.com/");
+                    Process.Start("https://discourse.agopengps.com/");
                     break;
                 case "AOGConfig-O-Matic!":
-                    System.Diagnostics.Process.Start("https://github.com/lansalot/AOGConfigOMatic");
+                    Process.Start("https://github.com/lansalot/AOGConfigOMatic");
                     break;
                 case "AgOpenGPS Tools":
-                    System.Diagnostics.Process.Start("https://github.com/lansalot/AgOpenGPS-Tools");
+                    Process.Start("https://github.com/lansalot/AgOpenGPS-Tools");
                     break;
                 case "Donate to AOG!":
-                    System.Diagnostics.Process.Start("https://www.buymeacoffee.com/agopengps");
+                    Process.Start("https://www.buymeacoffee.com/agopengps");
                     break;
             }
         }
@@ -860,7 +841,7 @@ namespace AOGConfigOMatic
             SerialPort spLUM982 = (SerialPort)sender;
             rcvDataUM982 = "";
             rcvDataUM982 = spLUM982.ReadLine();
-            safeChatUM982(rcvDataUM982);
+            SafeChatUM982(rcvDataUM982);
         }
 
         private void StopReadingDataUM982()
@@ -881,6 +862,7 @@ namespace AOGConfigOMatic
                 }
             }
         }
+
         private void ScanPortsUM982()
         {
             var ports = SerialPort.GetPortNames().ToList();
@@ -890,7 +872,8 @@ namespace AOGConfigOMatic
                 lbCOMPortsUM982.Items.Add(port);
             }
         }
-        private void safeChatUM982(string chat)
+
+        private void SafeChatUM982(string chat)
         {
             if (isClosing) { return; }
             txtSerialChatUM982.Invoke(new MethodInvoker(delegate
@@ -919,7 +902,6 @@ namespace AOGConfigOMatic
 
         private void btnConnectUM982_Click(object sender, EventArgs e)
         {
-
             if (isReadingData)
             {
                 StopReadingDataUM982();
@@ -939,7 +921,7 @@ namespace AOGConfigOMatic
                 }
                 catch
                 {
-                    safeChatUM982("Error opening serial port - make sure anything using it is closed!");
+                    SafeChatUM982("Error opening serial port - make sure anything using it is closed!");
                     return;
                 }
                 btnConnectUM982.Text = "Disconnect";
@@ -981,8 +963,8 @@ namespace AOGConfigOMatic
                 isReadingData = true;
                 btnConfigUM982.Enabled = true;
             }
-
         }
+
         private void btnConfigUM982_Click(object sender, EventArgs e)
         {
             if (_serialPort == null || !_serialPort.IsOpen)
@@ -992,6 +974,7 @@ namespace AOGConfigOMatic
             }
             ConfigureReceiverUM982();
         }
+
         private void ConfigureReceiverUM982()
         {
             if (string.IsNullOrEmpty(SelectedComPort) || string.IsNullOrEmpty(configurationFilenameUM982) || !isReadingData)
@@ -1021,21 +1004,21 @@ namespace AOGConfigOMatic
                 {
                     _serialPort.DataReceived += MySerialPort_DataReceived;
 
-                    safeChatUM982("Configuring:");
+                    SafeChatUM982("Configuring:");
 
                     // Skip the first line of the file, that is the version
                     foreach (var line in lines.Skip(1))
                     {
-                        safeChatUM982(line);
+                        SafeChatUM982(line);
                         _serialPort.WriteLine(line + Environment.NewLine);
                         Thread.Sleep(500);
                     }
 
-                    safeChatUM982("Configuring receiver done");
+                    SafeChatUM982("Configuring receiver done");
                 }
                 catch (Exception ex)
                 {
-                    safeChatUM982("Error sending configuration to receiver" + Environment.NewLine + ex.ToString());
+                    SafeChatUM982("Error sending configuration to receiver" + Environment.NewLine + ex.ToString());
                 }
                 finally
                 {
@@ -1049,16 +1032,6 @@ namespace AOGConfigOMatic
         }
 
         #endregion
-
-        private void tabGPS_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtSerialChat_TextChanged(object sender, EventArgs e)
-        {
-
-        }
     }
 
     public class TeensyFirmwareItem
