@@ -841,7 +841,7 @@ namespace AOGConfigOMatic
             {
                 try
                 {
-                    _serialPort!.DataReceived += MySerialPort_DataReceived;
+                    _serialPort!.DataReceived += MySerialPort_DataReceived_UM982;
 
                     SafeChatUM982("Configuring:");
 
