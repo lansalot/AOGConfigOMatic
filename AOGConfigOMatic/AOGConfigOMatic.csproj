@@ -66,6 +66,12 @@
     <Compile Include="Teensy\TeensyControl.Designer.cs">
       <DependentUpon>TeensyControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="UBlox\UBloxControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UBlox\UBloxControl.Designer.cs">
+      <DependentUpon>UBloxControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="UM982\UM982Control.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -87,6 +93,9 @@
     </Compile>
     <EmbeddedResource Include="Teensy\TeensyControl.resx">
       <DependentUpon>TeensyControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UBlox\UBloxControl.resx">
+      <DependentUpon>UBloxControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UM982\UM982Control.resx">
       <DependentUpon>UM982Control.cs</DependentUpon>
