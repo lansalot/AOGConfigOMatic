@@ -66,6 +66,12 @@
     <Compile Include="Teensy\TeensyControl.Designer.cs">
       <DependentUpon>TeensyControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="UM982\UM982Control.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UM982\UM982Control.Designer.cs">
+      <DependentUpon>UM982Control.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
     </EmbeddedResource>
@@ -81,6 +87,9 @@
     </Compile>
     <EmbeddedResource Include="Teensy\TeensyControl.resx">
       <DependentUpon>TeensyControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UM982\UM982Control.resx">
+      <DependentUpon>UM982Control.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Firmwares.csv" />
     <None Include="Properties\Settings.settings">

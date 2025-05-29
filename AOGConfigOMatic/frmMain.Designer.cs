@@ -56,14 +56,10 @@ namespace AOGConfigOMatic
             this.btnURefresh = new System.Windows.Forms.Button();
             this.lblUblox = new System.Windows.Forms.Label();
             this.tabTeensy = new System.Windows.Forms.TabPage();
-            this.teensyControl = new AOGConfigOMatic.Teensy.TeensyControl();
             this.tabUM982 = new System.Windows.Forms.TabPage();
-            this.btnConfigUM982 = new System.Windows.Forms.Button();
-            this.txtSerialChatUM982 = new System.Windows.Forms.TextBox();
-            this.btnConnectUM982 = new System.Windows.Forms.Button();
-            this.lbCOMPortsUM982 = new System.Windows.Forms.ListBox();
-            this.btnURefreshUM982 = new System.Windows.Forms.Button();
             this.btnHelp = new System.Windows.Forms.Button();
+            this.teensyControl = new AOGConfigOMatic.Teensy.TeensyControl();
+            this.um982Control = new AOGConfigOMatic.UM982.UM982Control();
             this.tbPages.SuspendLayout();
             this.tabGPS.SuspendLayout();
             this.pblF9PConfig.SuspendLayout();
@@ -290,22 +286,9 @@ namespace AOGConfigOMatic
             this.tabTeensy.Text = "Teensy";
             this.tabTeensy.UseVisualStyleBackColor = true;
             // 
-            // teensyControl
-            // 
-            this.teensyControl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.5F);
-            this.teensyControl.Location = new System.Drawing.Point(0, 0);
-            this.teensyControl.Margin = new System.Windows.Forms.Padding(7);
-            this.teensyControl.Name = "teensyControl";
-            this.teensyControl.Size = new System.Drawing.Size(720, 539);
-            this.teensyControl.TabIndex = 14;
-            // 
             // tabUM982
             // 
-            this.tabUM982.Controls.Add(this.btnConfigUM982);
-            this.tabUM982.Controls.Add(this.txtSerialChatUM982);
-            this.tabUM982.Controls.Add(this.btnConnectUM982);
-            this.tabUM982.Controls.Add(this.lbCOMPortsUM982);
-            this.tabUM982.Controls.Add(this.btnURefreshUM982);
+            this.tabUM982.Controls.Add(this.um982Control);
             this.tabUM982.Location = new System.Drawing.Point(4, 41);
             this.tabUM982.Name = "tabUM982";
             this.tabUM982.Padding = new System.Windows.Forms.Padding(3);
@@ -313,65 +296,6 @@ namespace AOGConfigOMatic
             this.tabUM982.TabIndex = 2;
             this.tabUM982.Text = "UM982";
             this.tabUM982.UseVisualStyleBackColor = true;
-            // 
-            // btnConfigUM982
-            // 
-            this.btnConfigUM982.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnConfigUM982.Location = new System.Drawing.Point(153, 107);
-            this.btnConfigUM982.Margin = new System.Windows.Forms.Padding(2);
-            this.btnConfigUM982.Name = "btnConfigUM982";
-            this.btnConfigUM982.Size = new System.Drawing.Size(120, 41);
-            this.btnConfigUM982.TabIndex = 11;
-            this.btnConfigUM982.Text = "Configure UM982";
-            this.btnConfigUM982.UseVisualStyleBackColor = true;
-            this.btnConfigUM982.Click += new System.EventHandler(this.btnConfigUM982_Click);
-            // 
-            // txtSerialChatUM982
-            // 
-            this.txtSerialChatUM982.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtSerialChatUM982.Location = new System.Drawing.Point(14, 188);
-            this.txtSerialChatUM982.Margin = new System.Windows.Forms.Padding(2);
-            this.txtSerialChatUM982.Multiline = true;
-            this.txtSerialChatUM982.Name = "txtSerialChatUM982";
-            this.txtSerialChatUM982.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtSerialChatUM982.Size = new System.Drawing.Size(692, 346);
-            this.txtSerialChatUM982.TabIndex = 10;
-            // 
-            // btnConnectUM982
-            // 
-            this.btnConnectUM982.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnConnectUM982.Location = new System.Drawing.Point(153, 62);
-            this.btnConnectUM982.Margin = new System.Windows.Forms.Padding(2);
-            this.btnConnectUM982.Name = "btnConnectUM982";
-            this.btnConnectUM982.Size = new System.Drawing.Size(120, 41);
-            this.btnConnectUM982.TabIndex = 9;
-            this.btnConnectUM982.Text = "Connect";
-            this.btnConnectUM982.UseVisualStyleBackColor = true;
-            this.btnConnectUM982.Click += new System.EventHandler(this.btnConnectUM982_Click);
-            // 
-            // lbCOMPortsUM982
-            // 
-            this.lbCOMPortsUM982.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbCOMPortsUM982.FormattingEnabled = true;
-            this.lbCOMPortsUM982.ItemHeight = 20;
-            this.lbCOMPortsUM982.Location = new System.Drawing.Point(14, 17);
-            this.lbCOMPortsUM982.Margin = new System.Windows.Forms.Padding(2);
-            this.lbCOMPortsUM982.Name = "lbCOMPortsUM982";
-            this.lbCOMPortsUM982.Size = new System.Drawing.Size(121, 144);
-            this.lbCOMPortsUM982.TabIndex = 8;
-            this.lbCOMPortsUM982.SelectedIndexChanged += new System.EventHandler(this.lbCOMPortsUM982_SelectedIndexChanged);
-            // 
-            // btnURefreshUM982
-            // 
-            this.btnURefreshUM982.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnURefreshUM982.Location = new System.Drawing.Point(153, 17);
-            this.btnURefreshUM982.Margin = new System.Windows.Forms.Padding(2);
-            this.btnURefreshUM982.Name = "btnURefreshUM982";
-            this.btnURefreshUM982.Size = new System.Drawing.Size(120, 41);
-            this.btnURefreshUM982.TabIndex = 7;
-            this.btnURefreshUM982.Text = "Rescan Ports";
-            this.btnURefreshUM982.UseVisualStyleBackColor = true;
-            this.btnURefreshUM982.Click += new System.EventHandler(this.btnURefreshUM982_Click);
             // 
             // btnHelp
             // 
@@ -385,6 +309,24 @@ namespace AOGConfigOMatic
             this.btnHelp.Text = "?";
             this.btnHelp.UseVisualStyleBackColor = true;
             this.btnHelp.Click += new System.EventHandler(this.btnHelp_Click);
+            // 
+            // teensyControl
+            // 
+            this.teensyControl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.5F);
+            this.teensyControl.Location = new System.Drawing.Point(0, 0);
+            this.teensyControl.Margin = new System.Windows.Forms.Padding(7);
+            this.teensyControl.Name = "teensyControl";
+            this.teensyControl.Size = new System.Drawing.Size(720, 539);
+            this.teensyControl.TabIndex = 14;
+            // 
+            // um982Control
+            // 
+            this.um982Control.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.5F);
+            this.um982Control.Location = new System.Drawing.Point(0, 0);
+            this.um982Control.Margin = new System.Windows.Forms.Padding(7);
+            this.um982Control.Name = "um982Control";
+            this.um982Control.Size = new System.Drawing.Size(720, 539);
+            this.um982Control.TabIndex = 12;
             // 
             // frmMain
             // 
@@ -405,7 +347,6 @@ namespace AOGConfigOMatic
             this.pblF9PConfig.PerformLayout();
             this.tabTeensy.ResumeLayout(false);
             this.tabUM982.ResumeLayout(false);
-            this.tabUM982.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -431,12 +372,8 @@ namespace AOGConfigOMatic
         private ProgressBar pbConfiguration;
         private Button btnHelp;
         private TabPage tabUM982;
-        private Button btnConnectUM982;
-        private ListBox lbCOMPortsUM982;
-        private Button btnURefreshUM982;
-        private TextBox txtSerialChatUM982;
-        private Button btnConfigUM982;
         private Teensy.TeensyControl teensyControl;
+        private UM982.UM982Control um982Control;
     }
 }
 
