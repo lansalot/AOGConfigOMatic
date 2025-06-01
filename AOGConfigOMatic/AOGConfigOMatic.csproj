@@ -60,6 +60,24 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Teensy\TeensyControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Teensy\TeensyControl.Designer.cs">
+      <DependentUpon>TeensyControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UBlox\UBloxControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UBlox\UBloxControl.Designer.cs">
+      <DependentUpon>UBloxControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UM982\UM982Control.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UM982\UM982Control.Designer.cs">
+      <DependentUpon>UM982Control.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
     </EmbeddedResource>
@@ -73,6 +91,15 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Teensy\TeensyControl.resx">
+      <DependentUpon>TeensyControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UBlox\UBloxControl.resx">
+      <DependentUpon>UBloxControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UM982\UM982Control.resx">
+      <DependentUpon>UM982Control.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Firmwares.csv" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
