@@ -13,9 +13,8 @@ namespace AOGConfigOMatic.UM982
         private SerialPort? _serialPort = null;
         private bool isReadingData = false;
         private bool isClosing = false;
-
+        private string configurationFilenameUM982;
         private bool isProgrammingUM982 = false;
-        private readonly string configurationFilenameUM982 = ".\\ConfigUM982.txt";
         private string rcvDataUM982 = string.Empty;
 
         public UM982Control()
@@ -192,6 +191,14 @@ namespace AOGConfigOMatic.UM982
             try
             {
                 // get receiver configuration file
+                if (btnUMDual.Checked)
+                {
+                    configurationFilenameUM982 = ".\\ConfigUM982D.txt";
+                }
+                else
+                {
+                    configurationFilenameUM982 = ".\\ConfigUM982S.txt";
+                }
                 lines = File.ReadAllLines(configurationFilenameUM982);
             }
             catch (Exception ex)

@@ -1,9 +1,9 @@
 ﻿All-in-one (for v2.x),https://raw.githubusercontent.com/lansalot/AOGConfigOMatic/main/Firmwares/AOG-2.5.hex
 All-in-one (for v4.x),https://raw.githubusercontent.com/lansalot/AOGConfigOMatic/main/Firmwares/AOG-4.1.hex
+All-in-one (for v4.x - DHCP Beta),https://raw.githubusercontent.com/lansalot/AOGConfigOMatic/main/Firmwares/AIOv4-DHCP-Beta.hex
 CommonRail's CANBUS,https://raw.githubusercontent.com/lansalot/AOGConfigOMatic/main/Firmwares/AOG-CommonRail-CANBUS.hex
 CommonRail's CANBUS (adapted for all-in-one board),https://raw.githubusercontent.com/lansalot/AOGConfigOMatic/main/Firmwares/CANBUS-All-In-One.hex
 CANBUS for AIO (test added MF7S and CatMT support),https://raw.githubusercontent.com/lansalot/AOGConfigOMatic/main/Firmwares/CANBUS-AIO-beta.hex
-Keya Motorwheel (RVC only),https://raw.githubusercontent.com/lansalot/AOGConfigOMatic/main/Firmwares/Keya.hex
-Keya Motorwheel (Non-RVC - use this!),https://raw.githubusercontent.com/lansalot/AOGConfigOMatic/main/Firmwares/Keya-NonRVC.hex
+Keya Motorwheel,https://raw.githubusercontent.com/lansalot/AOGConfigOMatic/main/Firmwares/Keya-NonRVC.hex
 PANDA (for PCBv2),https://raw.githubusercontent.com/lansalot/AOGConfigOMatic/main/Firmwares/AOG-2.5.hex
 Rate Controller (RC21 rate app),https://raw.githubusercontent.com/lansalot/AOGConfigOMatic/main/Firmwares/RCteensy.hex

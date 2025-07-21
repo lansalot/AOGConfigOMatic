@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -168,9 +169,14 @@ namespace AOGConfigOMatic.Teensy
 
         private void lbFirmware_SelectedIndexChanged_1(object sender, EventArgs e)
         {
-            chosenFirmware = ((TeensyFirmwareItem)lbFirmware.SelectedItem).Location;
-            if (lbFirmware.SelectedIndex > -1 && lbTeensies.SelectedIndex > -1 && lbTeensies.Items.Count > 0)
+            if (lbFirmware.SelectedIndex == -1)
             {
+                btnProgram.Enabled = false;
+                return;
+            }
+            else if (lbFirmware.SelectedIndex > -1 && lbTeensies.SelectedIndex > -1 && lbTeensies.Items.Count > 0)
+            {
+                chosenFirmware = ((TeensyFirmwareItem)lbFirmware.SelectedItem).Location;
                 btnProgram.Enabled = true;
             }
         }

@@ -17,6 +17,7 @@ namespace AOGConfigOMatic.UBlox
         private readonly AutoResetEvent _waitForMonVer = new AutoResetEvent(false);
         private bool _ack = false;
         private string _monVerString = string.Empty;
+        private bool xBeeMode = false;
 
         // 10 byte receive buffer for UBX and AOG messages. Only used to read the first few bytes.
         private readonly byte[] _ubxParseBuffer = new byte[10];
@@ -79,15 +80,29 @@ namespace AOGConfigOMatic.UBlox
             {
                 StopReadingData();
                 btnConnect.Text = "Connect";
+                tmrMessages.Stop();
             }
             else
             {
+                txtSerialChat.Clear();
+                if (sender.ToString().IndexOf("Timer") > 0)
+                {
+                    txtSerialChat.AppendText("No messages received - trying Xbee mode!" + Environment.NewLine);
+                }
+                tmrMessages.Start();
                 if (lbCOMPorts.SelectedIndex == -1)
                 {
                     txtSerialChat.AppendText("Please select a COM port" + Environment.NewLine);
                     return;
                 }
-                _serialPort = new SerialPort(SelectedComPort, 460800, Parity.None, 8, StopBits.One);
+                if (xBeeMode)
+                {
+                    _serialPort = new SerialPort(SelectedComPort, 38400, Parity.None, 8, StopBits.One);
+                }
+                else
+                {
+                    _serialPort = new SerialPort(SelectedComPort, 460800, Parity.None, 8, StopBits.One);
+                }
                 try
                 {
                     _serialPort.Open();
@@ -238,7 +253,11 @@ namespace AOGConfigOMatic.UBlox
                 if (ubxMessage && _ubxParseBuffer[2] == 0x0A && _ubxParseBuffer[3] == 0x04)
                 {
                     int length = buf[i + 1];
-                    length |= buf[i + 2] << 8;
+                    try
+                    {
+                        length |= buf[i + 2] << 8;
+                    }
+                    catch { }
 
                     var verIndex = i + 3;
                     var payloadEnd = verIndex + length - 1;
@@ -564,7 +583,14 @@ namespace AOGConfigOMatic.UBlox
             }
 
             var batchFile = Path.GetTempPath() + "flashf9p.bat";
-            File.WriteAllText(batchFile, "ubxfwupdate -p \\\\.\\" + SelectedComPort + " -b 460800:9600:460800 --no-fis 1 -s 0 -t 0 -v 1 UBX113.bin");
+            if (xBeeMode)
+            {
+                File.WriteAllText(batchFile, "ubxfwupdate -p \\\\.\\" + SelectedComPort + " -b 38400:38400:460800 --no-fis 1 -s 0 -t 0 -v 1 UBX113.bin");
+            }
+            else
+            {
+                File.WriteAllText(batchFile, "ubxfwupdate -p \\\\.\\" + SelectedComPort + " -b 460800:9600:460800 --no-fis 1 -s 0 -t 0 -v 1 UBX113.bin");
+            }
             File.AppendAllText(batchFile, "\r\npause");
 
             txtSerialChat.AppendText("Flashing F9P firmware" + Environment.NewLine);
@@ -575,6 +601,7 @@ namespace AOGConfigOMatic.UBlox
             process.WaitForExit();
             txtSerialChat.AppendText("Flashing F9P firmware complete" + Environment.NewLine);
             txtSerialChat.AppendText("Now, hit configure to send the configuration!" + Environment.NewLine);
+            xBeeMode = false; // should be OK to reset this, post-flash
         }
 
         private void btnConfigF9P_Click(object sender, EventArgs e)
@@ -591,6 +618,12 @@ namespace AOGConfigOMatic.UBlox
                 return;
             }
             ConfigureReceiver(_FileName);
+            if (!xBeeMode)
+            {
+                _serialPort.BaudRate = 460800;
+                xBeeMode = true;
+                btnConnect_Click(sender, e);
+            }
         }
 
         private void rbSingleF9P_CheckedChanged(object sender, EventArgs e)
@@ -614,6 +647,17 @@ namespace AOGConfigOMatic.UBlox
             if (rbDualRelPos.Checked)
             {
                 _FileName = ".\\DualRelPos.txt";
+            }
+        }
+
+        private void tmrMessages_Tick(object sender, EventArgs e)
+        {
+            if (txtSerialChat.Text.Length < 50)
+            {
+                tmrMessages.Stop();
+                xBeeMode = true;
+                btnConnect_Click(this, e);
+                btnConnect_Click(sender, e);
             }
         }
     }
