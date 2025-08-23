@@ -66,11 +66,45 @@ namespace AOGConfigOMatic.UM982
 
         private void ScanPortsUM982()
         {
-            var ports = SerialPort.GetPortNames().ToList();
             lbCOMPortsUM982.Items.Clear();
-            foreach (var port in ports)
+            
+            try
             {
-                lbCOMPortsUM982.Items.Add(port);
+                var portInfos = UsbSerialPortInfo.GetSerialPorts();
+                
+                foreach (var portInfo in portInfos)
+                {
+                    // For AiO devices, try to identify by interface first
+                    if (portInfo.IsAioGpsConfigurator && portInfo.AioPortType == AioPortType.Unknown)
+                    {
+                        portInfo.AioPortType = AioPortIdentifier.IdentifyPortByInterface(portInfo.InterfaceNumber);
+                    }
+                    
+                    lbCOMPortsUM982.Items.Add(portInfo);
+                }
+                
+                lbCOMPortsUM982.DisplayMember = "FriendlyName";
+                lbCOMPortsUM982.ValueMember = "PortName";
+            }
+            catch (Exception ex)
+            {
+                // Fallback to basic port enumeration
+                var basicPorts = SerialPort.GetPortNames();
+                foreach (var port in basicPorts)
+                {
+                    var basicPortInfo = new UsbSerialPortInfo 
+                    { 
+                        PortName = port, 
+                        Description = port,
+                        AioPortType = AioPortType.Unknown
+                    };
+                    lbCOMPortsUM982.Items.Add(basicPortInfo);
+                }
+                
+                lbCOMPortsUM982.DisplayMember = "FriendlyName";
+                lbCOMPortsUM982.ValueMember = "PortName";
+                
+                System.Diagnostics.Debug.WriteLine($"Error scanning UM982 ports: {ex.Message}");
             }
         }
 
@@ -90,10 +124,24 @@ namespace AOGConfigOMatic.UM982
 
         private void lbCOMPortsUM982_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (lbCOMPortsUM982.SelectedIndex > -1)
+            if (lbCOMPortsUM982.SelectedIndex > -1 && lbCOMPortsUM982.SelectedItem is UsbSerialPortInfo portInfo)
             {
-                SelectedComPort = lbCOMPortsUM982.SelectedItem.ToString();
+                SelectedComPort = portInfo.PortName;
                 btnConnectUM982.Enabled = true;
+                
+                // Show additional info for AiO devices
+                if (portInfo.IsAioGpsConfigurator)
+                {
+                    var typeInfo = portInfo.AioPortType switch
+                    {
+                        AioPortType.Console => " (Console - Command/control interface)",
+                        AioPortType.Gps1 => " (GPS1 - Bridge to Serial2)",
+                        AioPortType.Gps2 => " (GPS2 - Bridge to Serial3)",
+                        _ => " (AiO GPS Configurator)"
+                    };
+                    
+                    System.Diagnostics.Debug.WriteLine($"Selected AiO UM982 port: {portInfo.PortName}{typeInfo}");
+                }
             }
             else
             {

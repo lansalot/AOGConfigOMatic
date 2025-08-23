@@ -42,7 +42,7 @@
             // btnConfigUM982
             // 
             this.btnConfigUM982.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnConfigUM982.Location = new System.Drawing.Point(204, 132);
+            this.btnConfigUM982.Location = new System.Drawing.Point(284, 132);
             this.btnConfigUM982.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnConfigUM982.Name = "btnConfigUM982";
             this.btnConfigUM982.Size = new System.Drawing.Size(160, 50);
@@ -65,7 +65,7 @@
             // btnConnectUM982
             // 
             this.btnConnectUM982.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnConnectUM982.Location = new System.Drawing.Point(204, 76);
+            this.btnConnectUM982.Location = new System.Drawing.Point(284, 76);
             this.btnConnectUM982.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnConnectUM982.Name = "btnConnectUM982";
             this.btnConnectUM982.Size = new System.Drawing.Size(160, 50);
@@ -82,14 +82,14 @@
             this.lbCOMPortsUM982.Location = new System.Drawing.Point(19, 21);
             this.lbCOMPortsUM982.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.lbCOMPortsUM982.Name = "lbCOMPortsUM982";
-            this.lbCOMPortsUM982.Size = new System.Drawing.Size(160, 154);
+            this.lbCOMPortsUM982.Size = new System.Drawing.Size(240, 154);
             this.lbCOMPortsUM982.TabIndex = 8;
             this.lbCOMPortsUM982.SelectedIndexChanged += new System.EventHandler(this.lbCOMPortsUM982_SelectedIndexChanged);
             // 
             // btnURefreshUM982
             // 
             this.btnURefreshUM982.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnURefreshUM982.Location = new System.Drawing.Point(204, 21);
+            this.btnURefreshUM982.Location = new System.Drawing.Point(284, 21);
             this.btnURefreshUM982.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnURefreshUM982.Name = "btnURefreshUM982";
             this.btnURefreshUM982.Size = new System.Drawing.Size(160, 50);
@@ -102,7 +102,7 @@
             // 
             this.panel1.Controls.Add(this.btnUMDual);
             this.panel1.Controls.Add(this.btnUMSingle);
-            this.panel1.Location = new System.Drawing.Point(431, 21);
+            this.panel1.Location = new System.Drawing.Point(511, 21);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(177, 105);
             this.panel1.TabIndex = 15;
