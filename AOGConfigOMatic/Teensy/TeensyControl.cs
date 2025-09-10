@@ -117,9 +117,9 @@ namespace AOGConfigOMatic.Teensy
                     return true;
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                LogMessage("Error downloading " + localFile);
+                LogMessage("Error downloading " + url + "\r\n" + ex.Message);
                 return false;
             }
         }
