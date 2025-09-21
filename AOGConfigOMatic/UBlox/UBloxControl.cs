@@ -61,11 +61,50 @@ namespace AOGConfigOMatic.UBlox
 
         private void ScanPorts()
         {
-            var ports = SerialPort.GetPortNames().ToList();
             lbCOMPorts.Items.Clear();
-            foreach (var port in ports)
+            
+            try
             {
-                lbCOMPorts.Items.Add(port);
+                var portInfos = UsbSerialPortInfo.GetSerialPorts();
+                
+                foreach (var portInfo in portInfos)
+                {
+                    // For AiO devices, try to identify by interface first, then by behavior if needed
+                    if (portInfo.IsAioGpsConfigurator && portInfo.AioPortType == AioPortType.Unknown)
+                    {
+                        portInfo.AioPortType = AioPortIdentifier.IdentifyPortByInterface(portInfo.InterfaceNumber);
+                        
+                        // If interface method didn't work, try behavioral identification
+                        // Note: This is commented out by default as it requires opening ports
+                        // Uncomment if needed: AioPortIdentifier.IdentifyAioPortAsync(portInfo, CancellationToken.None);
+                    }
+                    
+                    lbCOMPorts.Items.Add(portInfo);
+                }
+                
+                // Update display format
+                lbCOMPorts.DisplayMember = "FriendlyName";
+                lbCOMPorts.ValueMember = "PortName";
+            }
+            catch (Exception ex)
+            {
+                // Fallback to basic port enumeration
+                var basicPorts = SerialPort.GetPortNames();
+                foreach (var port in basicPorts)
+                {
+                    var basicPortInfo = new UsbSerialPortInfo 
+                    { 
+                        PortName = port, 
+                        Description = port,
+                        AioPortType = AioPortType.Unknown
+                    };
+                    lbCOMPorts.Items.Add(basicPortInfo);
+                }
+                
+                lbCOMPorts.DisplayMember = "FriendlyName";
+                lbCOMPorts.ValueMember = "PortName";
+                
+                System.Diagnostics.Debug.WriteLine($"Error scanning ports: {ex.Message}");
             }
         }
 
@@ -123,10 +162,25 @@ namespace AOGConfigOMatic.UBlox
 
         private void lbCOMPorts_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (lbCOMPorts.SelectedIndex > -1)
+            if (lbCOMPorts.SelectedIndex > -1 && lbCOMPorts.SelectedItem is UsbSerialPortInfo portInfo)
             {
-                SelectedComPort = lbCOMPorts.SelectedItem.ToString();
+                SelectedComPort = portInfo.PortName;
                 btnConnect.Enabled = true;
+                
+                // Show additional info for AiO devices
+                if (portInfo.IsAioGpsConfigurator)
+                {
+                    var typeInfo = portInfo.AioPortType switch
+                    {
+                        AioPortType.Console => " (Console - Command/control interface)",
+                        AioPortType.Gps1 => " (GPS1 - Bridge to Serial2)",
+                        AioPortType.Gps2 => " (GPS2 - Bridge to Serial3)",
+                        _ => " (AiO GPS Configurator)"
+                    };
+                    
+                    // You could add a status label to show this info
+                    System.Diagnostics.Debug.WriteLine($"Selected AiO port: {portInfo.PortName}{typeInfo}");
+                }
             }
             else
             {

@@ -61,7 +61,7 @@
             this.pblF9PConfig.Controls.Add(this.rbDualRelPos);
             this.pblF9PConfig.Controls.Add(this.rbDualLocation);
             this.pblF9PConfig.Controls.Add(this.rbSingleF9P);
-            this.pblF9PConfig.Location = new System.Drawing.Point(228, 217);
+            this.pblF9PConfig.Location = new System.Drawing.Point(308, 217);
             this.pblF9PConfig.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.pblF9PConfig.Name = "pblF9PConfig";
             this.pblF9PConfig.Size = new System.Drawing.Size(333, 126);
@@ -120,7 +120,7 @@
             // btnConfigF9P
             // 
             this.btnConfigF9P.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnConfigF9P.Location = new System.Drawing.Point(228, 140);
+            this.btnConfigF9P.Location = new System.Drawing.Point(308, 140);
             this.btnConfigF9P.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnConfigF9P.Name = "btnConfigF9P";
             this.btnConfigF9P.Size = new System.Drawing.Size(160, 50);
@@ -132,7 +132,7 @@
             // btnF9PFlashFirmware
             // 
             this.btnF9PFlashFirmware.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnF9PFlashFirmware.Location = new System.Drawing.Point(403, 140);
+            this.btnF9PFlashFirmware.Location = new System.Drawing.Point(483, 140);
             this.btnF9PFlashFirmware.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnF9PFlashFirmware.Name = "btnF9PFlashFirmware";
             this.btnF9PFlashFirmware.Size = new System.Drawing.Size(160, 50);
@@ -153,7 +153,7 @@
             // btnConnect
             // 
             this.btnConnect.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnConnect.Location = new System.Drawing.Point(228, 76);
+            this.btnConnect.Location = new System.Drawing.Point(308, 76);
             this.btnConnect.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnConnect.Name = "btnConnect";
             this.btnConnect.Size = new System.Drawing.Size(160, 50);
@@ -191,7 +191,7 @@
             this.lbCOMPorts.Location = new System.Drawing.Point(27, 167);
             this.lbCOMPorts.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.lbCOMPorts.Name = "lbCOMPorts";
-            this.lbCOMPorts.Size = new System.Drawing.Size(160, 154);
+            this.lbCOMPorts.Size = new System.Drawing.Size(240, 154);
             this.lbCOMPorts.TabIndex = 3;
             this.lbCOMPorts.SelectedIndexChanged += new System.EventHandler(this.lbCOMPorts_SelectedIndexChanged);
             // 
@@ -201,7 +201,7 @@
             this.btnURefresh.Location = new System.Drawing.Point(27, 76);
             this.btnURefresh.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnURefresh.Name = "btnURefresh";
-            this.btnURefresh.Size = new System.Drawing.Size(160, 50);
+            this.btnURefresh.Size = new System.Drawing.Size(240, 50);
             this.btnURefresh.TabIndex = 2;
             this.btnURefresh.Text = "Rescan Ports";
             this.btnURefresh.UseVisualStyleBackColor = true;
