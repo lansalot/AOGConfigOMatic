@@ -585,11 +585,11 @@ namespace AOGConfigOMatic.UBlox
             var batchFile = Path.GetTempPath() + "flashf9p.bat";
             if (xBeeMode)
             {
-                File.WriteAllText(batchFile, "ubxfwupdate -p \\\\.\\" + SelectedComPort + " -b 38400:38400:460800 --no-fis 1 -s 0 -t 0 -v 1 UBX113.bin");
+                File.WriteAllText(batchFile, "ubxfwupdate -p \\\\.\\" + SelectedComPort + " -b 38400:38400:460800 --no-fis 1 -s 1 -t 1 -v 1 UBX113.bin");
             }
             else
             {
-                File.WriteAllText(batchFile, "ubxfwupdate -p \\\\.\\" + SelectedComPort + " -b 460800:9600:460800 --no-fis 1 -s 0 -t 0 -v 1 UBX113.bin");
+                File.WriteAllText(batchFile, "ubxfwupdate -p \\\\.\\" + SelectedComPort + " -b 460800:9600:460800 --no-fis 1 -s 1 -t 1 -v 1 UBX113.bin");
             }
             File.AppendAllText(batchFile, "\r\npause");
 
