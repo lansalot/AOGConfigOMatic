@@ -15,12 +15,14 @@ namespace AOGConfigOMatic
         private void tbPages_SelectedIndexChanged(object sender, EventArgs e)
         {
             uBloxControl.TabChanged();
+            agOpenGpsControl.TabChanged();
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             uBloxControl.Close();
             um982Control.Close();
+            agOpenGpsControl.Close();
             base.OnFormClosing(e);
         }
 

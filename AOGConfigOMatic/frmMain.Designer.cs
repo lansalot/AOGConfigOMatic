@@ -45,11 +45,14 @@ namespace AOGConfigOMatic
             this.teensyControl = new AOGConfigOMatic.Teensy.TeensyControl();
             this.tabUM982 = new System.Windows.Forms.TabPage();
             this.um982Control = new AOGConfigOMatic.UM982.UM982Control();
+            this.tabAgOpenGPS = new System.Windows.Forms.TabPage();
+            this.agOpenGpsControl = new AOGConfigOMatic.AgOpenGPS.AgOpenGpsControl();
             this.btnHelp = new System.Windows.Forms.Button();
             this.tbPages.SuspendLayout();
             this.tabGPS.SuspendLayout();
             this.tabTeensy.SuspendLayout();
             this.tabUM982.SuspendLayout();
+            this.tabAgOpenGPS.SuspendLayout();
             this.SuspendLayout();
             // 
             // tbPages
@@ -58,6 +61,7 @@ namespace AOGConfigOMatic
             this.tbPages.Controls.Add(this.tabGPS);
             this.tbPages.Controls.Add(this.tabTeensy);
             this.tbPages.Controls.Add(this.tabUM982);
+            this.tbPages.Controls.Add(this.tabAgOpenGPS);
             this.tbPages.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbPages.Location = new System.Drawing.Point(10, 11);
             this.tbPages.Name = "tbPages";
@@ -125,6 +129,26 @@ namespace AOGConfigOMatic
             this.um982Control.Size = new System.Drawing.Size(720, 539);
             this.um982Control.TabIndex = 12;
             // 
+            // tabAgOpenGPS
+            // 
+            this.tabAgOpenGPS.Controls.Add(this.agOpenGpsControl);
+            this.tabAgOpenGPS.Location = new System.Drawing.Point(4, 41);
+            this.tabAgOpenGPS.Name = "tabAgOpenGPS";
+            this.tabAgOpenGPS.Padding = new System.Windows.Forms.Padding(3);
+            this.tabAgOpenGPS.Size = new System.Drawing.Size(720, 539);
+            this.tabAgOpenGPS.TabIndex = 3;
+            this.tabAgOpenGPS.Text = "AgOpenGPS";
+            this.tabAgOpenGPS.UseVisualStyleBackColor = true;
+            // 
+            // agOpenGpsControl
+            // 
+            this.agOpenGpsControl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.5F);
+            this.agOpenGpsControl.Location = new System.Drawing.Point(0, 0);
+            this.agOpenGpsControl.Margin = new System.Windows.Forms.Padding(7);
+            this.agOpenGpsControl.Name = "agOpenGpsControl";
+            this.agOpenGpsControl.Size = new System.Drawing.Size(720, 539);
+            this.agOpenGpsControl.TabIndex = 15;
+            // 
             // btnHelp
             // 
             this.btnHelp.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -153,6 +177,7 @@ namespace AOGConfigOMatic
             this.tabGPS.ResumeLayout(false);
             this.tabTeensy.ResumeLayout(false);
             this.tabUM982.ResumeLayout(false);
+            this.tabAgOpenGPS.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -163,9 +188,11 @@ namespace AOGConfigOMatic
         private TabPage tabGPS;
         private Button btnHelp;
         private TabPage tabUM982;
+        private TabPage tabAgOpenGPS;
         private Teensy.TeensyControl teensyControl;
         private UM982.UM982Control um982Control;
         private UBlox.UBloxControl uBloxControl;
+        private AgOpenGPS.AgOpenGpsControl agOpenGpsControl;
     }
 }
 
