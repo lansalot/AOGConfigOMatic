@@ -341,6 +341,130 @@ namespace AOGConfigOMatic.AgOpenGPS
                 btnLaunchAgOpenGPS.Enabled = false;
                 btnOpenInstallFolder.Enabled = Directory.Exists(_downloadPath);
             }
+            
+            // Update startup checkbox state
+            UpdateStartupCheckboxState();
+        }
+
+        private void UpdateStartupCheckboxState()
+        {
+            try
+            {
+                string keyName = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
+                string valueName = "AgOpenGPS";
+                
+                using (var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(keyName, false))
+                {
+                    var value = key?.GetValue(valueName);
+                    chkStartWithWindows.Checked = value != null;
+                }
+            }
+            catch
+            {
+                // If we can't read registry, assume it's not set
+                chkStartWithWindows.Checked = false;
+            }
+        }
+
+        private void chkStartWithWindows_CheckedChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                string keyName = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
+                string valueName = "AgOpenGPS";
+                
+                using (var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(keyName, true))
+                {
+                    if (chkStartWithWindows.Checked)
+                    {
+                        // Find AgOpenGPS executable to add to startup
+                        string agOpenGpsExe = null;
+                        if (Directory.Exists(_downloadPath))
+                        {
+                            var exeFiles = Directory.GetFiles(_downloadPath, "agopengps.exe", SearchOption.AllDirectories);
+                            if (exeFiles.Length > 0)
+                            {
+                                agOpenGpsExe = exeFiles[0];
+                            }
+                        }
+                        
+                        if (!string.IsNullOrEmpty(agOpenGpsExe) && File.Exists(agOpenGpsExe))
+                        {
+                            key?.SetValue(valueName, $"\"{agOpenGpsExe}\"");
+                            lblStatus.Text = "AgOpenGPS added to Windows startup";
+                        }
+                        else
+                        {
+                            MessageBox.Show("AgOpenGPS executable not found. Please install AgOpenGPS first.", 
+                                "Executable Not Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            chkStartWithWindows.Checked = false;
+                        }
+                    }
+                    else
+                    {
+                        // Remove from startup
+                        key?.DeleteValue(valueName, false);
+                        lblStatus.Text = "AgOpenGPS removed from Windows startup";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Could not modify startup settings: {ex.Message}", 
+                    "Startup Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Revert checkbox state if operation failed
+                chkStartWithWindows.Checked = !chkStartWithWindows.Checked;
+            }
+        }
+
+        private void btnCreateDesktopShortcut_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Find AgOpenGPS executable
+                string agOpenGpsExe = null;
+                if (Directory.Exists(_downloadPath))
+                {
+                    var exeFiles = Directory.GetFiles(_downloadPath, "agopengps.exe", SearchOption.AllDirectories);
+                    if (exeFiles.Length > 0)
+                    {
+                        agOpenGpsExe = exeFiles[0];
+                    }
+                }
+                
+                if (string.IsNullOrEmpty(agOpenGpsExe) || !File.Exists(agOpenGpsExe))
+                {
+                    MessageBox.Show("AgOpenGPS executable not found. Please install AgOpenGPS first.", 
+                        "Executable Not Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Create desktop shortcut
+                string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                string shortcutPath = Path.Combine(desktopPath, "AgOpenGPS.lnk");
+                
+                // Use WScript.Shell COM object to create shortcut (without dynamic)
+                Type shellType = Type.GetTypeFromProgID("WScript.Shell");
+                object shell = Activator.CreateInstance(shellType);
+                object shortcut = shellType.InvokeMember("CreateShortcut", System.Reflection.BindingFlags.InvokeMethod, 
+                    null, shell, new object[] { shortcutPath });
+                
+                // Set shortcut properties
+                Type shortcutType = shortcut.GetType();
+                shortcutType.InvokeMember("TargetPath", System.Reflection.BindingFlags.SetProperty, null, shortcut, new object[] { agOpenGpsExe });
+                shortcutType.InvokeMember("WorkingDirectory", System.Reflection.BindingFlags.SetProperty, null, shortcut, new object[] { Path.GetDirectoryName(agOpenGpsExe) });
+                shortcutType.InvokeMember("Description", System.Reflection.BindingFlags.SetProperty, null, shortcut, new object[] { "AgOpenGPS - Precision Agriculture Application" });
+                shortcutType.InvokeMember("Save", System.Reflection.BindingFlags.InvokeMethod, null, shortcut, null);
+                
+                lblStatus.Text = "Desktop shortcut created successfully";
+                MessageBox.Show($"Desktop shortcut created successfully at:\n{shortcutPath}", 
+                    "Shortcut Created", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Could not create desktop shortcut: {ex.Message}", 
+                    "Shortcut Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void dataGridViewReleases_SelectionChanged(object sender, EventArgs e)
