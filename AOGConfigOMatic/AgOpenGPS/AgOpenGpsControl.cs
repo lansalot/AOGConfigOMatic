@@ -196,9 +196,21 @@ namespace AOGConfigOMatic.AgOpenGPS
                 const string latestUrl = "https://api.github.com/repos/AgOpenGPS-Official/AgOpenGPS/releases/latest";
                 var response = await _httpClient.GetStringAsync(latestUrl);
                 var latestRelease = JsonConvert.DeserializeObject<AgOpenGpsRelease>(response);
-
-                MessageBox.Show($"Latest release: {latestRelease.TagName}\nPublished: {latestRelease.PublishedAt:yyyy-MM-dd}\n\n{latestRelease.Body}", 
-                    "Latest Release", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                if (latestRelease == null) return;
+                try
+                {
+                    if (!string.IsNullOrEmpty(latestRelease.HTMLUrl))
+                    {
+                        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(latestRelease.HTMLUrl)
+                        {
+                            UseShellExecute = true
+                        });
+                    }
+                }
+                catch (Exception openEx)
+                {
+                    lblStatus.Text = $"Could not open browser: {openEx.Message}";
+                }
             }
             catch (Exception ex)
             {
@@ -653,6 +665,10 @@ namespace AOGConfigOMatic.AgOpenGPS
     // Data models for GitHub API
     public class AgOpenGpsRelease
     {
+
+        [JsonProperty("html_url")]
+        public string HTMLUrl { get; set; }
+
         [JsonProperty("tag_name")]
         public string TagName { get; set; }
 
