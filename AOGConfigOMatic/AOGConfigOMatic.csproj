@@ -40,6 +40,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Management" />
     <Reference Include="System.Xml.Linq" />
@@ -82,6 +83,12 @@
     <Compile Include="UM982\UM982Control.Designer.cs">
       <DependentUpon>UM982Control.cs</DependentUpon>
     </Compile>
+    <Compile Include="AgOpenGPS\AgOpenGpsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="AgOpenGPS\AgOpenGpsControl.Designer.cs">
+      <DependentUpon>AgOpenGpsControl.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
     </EmbeddedResource>
@@ -103,6 +110,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UM982\UM982Control.resx">
       <DependentUpon>UM982Control.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AgOpenGPS\AgOpenGpsControl.resx">
+      <DependentUpon>AgOpenGpsControl.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Firmwares.csv" />
     <None Include="Properties\Settings.settings">
@@ -142,6 +152,9 @@
   <ItemGroup>
     <PackageReference Include="lunOptics.libTeensySharp">
       <Version>1.0.1</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.3</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
