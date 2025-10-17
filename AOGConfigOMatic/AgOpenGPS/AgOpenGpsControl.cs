@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -51,18 +52,37 @@ namespace AOGConfigOMatic.AgOpenGPS
             txtDownloadPath.Text = _downloadPath;
             chkIncludePreReleases.Checked = _includePreReleases;
             
-            // Create download directory if it doesn't exist
+            // Ensure download directory exists
+            EnsureDownloadDirectoryExists();
+            
+            // Update local installation info
+            UpdateLocalInstallationInfo();
+        }
+
+        private bool EnsureDownloadDirectoryExists()
+        {
+            if (string.IsNullOrWhiteSpace(_downloadPath))
+            {
+                MessageBox.Show("Download path is not set.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
             if (!Directory.Exists(_downloadPath))
             {
                 try
                 {
                     Directory.CreateDirectory(_downloadPath);
+                    lblStatus.Text = $"Created directory: {_downloadPath}";
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Could not create download directory: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show($"Could not create download directory '{_downloadPath}': {ex.Message}", 
+                        "Directory Creation Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
                 }
             }
+            
+            return true;
         }
 
         public async Task RefreshReleases()
@@ -117,7 +137,9 @@ namespace AOGConfigOMatic.AgOpenGPS
             foreach (var release in _releases)
             {
                 var versionText = release.IsPrerelease ? $"{release.TagName}β" : release.TagName;
-                var mainAsset = release.Assets?.FirstOrDefault(a => a.Name.EndsWith(".exe") || a.Name.EndsWith(".msi"));
+                var mainAsset = release.Assets?.FirstOrDefault(a => 
+                    a.Name.StartsWith("agopengps", StringComparison.OrdinalIgnoreCase) && 
+                    a.Name.EndsWith(".zip", StringComparison.OrdinalIgnoreCase));
                 var sizeText = mainAsset != null ? FormatFileSize(mainAsset.Size) : "N/A";
 
                 dataGridViewReleases.Rows.Add(
@@ -205,30 +227,120 @@ namespace AOGConfigOMatic.AgOpenGPS
                 {
                     _downloadPath = folderDialog.SelectedPath;
                     txtDownloadPath.Text = _downloadPath;
+                    UpdateLocalInstallationInfo();
                 }
             }
         }
 
-        private async void btnDownloadInstaller_Click(object sender, EventArgs e)
+        private async void btnDownloadZip_Click(object sender, EventArgs e)
         {
-            await DownloadSelectedRelease("installer");
-        }
-
-        private async void btnDownloadPortable_Click(object sender, EventArgs e)
-        {
-            await DownloadSelectedRelease("portable");
+            await DownloadSelectedRelease("zip");
         }
 
         private void btnLaunchAgOpenGPS_Click(object sender, EventArgs e)
         {
-            // TODO: Implement launch functionality
-            MessageBox.Show("Launch functionality will be implemented in Phase 2", "Not Implemented", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            try
+            {
+                // Search for agopengps.exe recursively in the download path
+                string agOpenGpsExe = null;
+                
+                if (Directory.Exists(_downloadPath))
+                {
+                    try
+                    {
+                        var exeFiles = Directory.GetFiles(_downloadPath, "agopengps.exe", SearchOption.AllDirectories);
+                        if (exeFiles.Length > 0)
+                        {
+                            agOpenGpsExe = exeFiles[0]; // Use the first one found
+                        }
+                    }
+                    catch
+                    {
+                        // Ignore search errors
+                    }
+                }
+                
+                if (!string.IsNullOrEmpty(agOpenGpsExe) && File.Exists(agOpenGpsExe))
+                {
+                    System.Diagnostics.Process.Start(agOpenGpsExe);
+                }
+                else
+                {
+                    MessageBox.Show("agopengps.exe not found in the installation directory.", "Not Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Could not launch AgOpenGPS: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void btnOpenInstallFolder_Click(object sender, EventArgs e)
         {
-            // TODO: Implement folder opening functionality  
-            MessageBox.Show("Open install folder functionality will be implemented in Phase 2", "Not Implemented", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            try
+            {
+                if (Directory.Exists(_downloadPath))
+                {
+                    System.Diagnostics.Process.Start("explorer.exe", _downloadPath);
+                }
+                else
+                {
+                    MessageBox.Show("Installation directory does not exist.", "Not Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Could not open folder: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void UpdateLocalInstallationInfo()
+        {
+            // Search for agopengps.exe recursively in the download path
+            string agOpenGpsExe = null;
+            
+            if (Directory.Exists(_downloadPath))
+            {
+                try
+                {
+                    // Search for agopengps.exe in the download directory and subdirectories
+                    var exeFiles = Directory.GetFiles(_downloadPath, "agopengps.exe", SearchOption.AllDirectories);
+                    if (exeFiles.Length > 0)
+                    {
+                        agOpenGpsExe = exeFiles[0]; // Use the first one found
+                    }
+                }
+                catch
+                {
+                    // Ignore search errors
+                }
+            }
+            
+            if (!string.IsNullOrEmpty(agOpenGpsExe) && File.Exists(agOpenGpsExe))
+            {
+                try
+                {
+                    var versionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(agOpenGpsExe);
+                    lblInstalledVersion.Text = $"Installed Version: {versionInfo.FileVersion ?? "Unknown"}";
+                    lblInstallPath.Text = $"Install Path: {Path.GetDirectoryName(agOpenGpsExe)}";
+                    btnLaunchAgOpenGPS.Enabled = true;
+                    btnOpenInstallFolder.Enabled = true;
+                }
+                catch
+                {
+                    lblInstalledVersion.Text = "Installed Version: (detected, version unknown)";
+                    lblInstallPath.Text = $"Install Path: {Path.GetDirectoryName(agOpenGpsExe)}";
+                    btnLaunchAgOpenGPS.Enabled = true;
+                    btnOpenInstallFolder.Enabled = true;
+                }
+            }
+            else
+            {
+                lblInstalledVersion.Text = "Installed Version: (not detected)";
+                lblInstallPath.Text = $"Install Path: {_downloadPath}";
+                btnLaunchAgOpenGPS.Enabled = false;
+                btnOpenInstallFolder.Enabled = Directory.Exists(_downloadPath);
+            }
         }
 
         private void dataGridViewReleases_SelectionChanged(object sender, EventArgs e)
@@ -261,29 +373,55 @@ namespace AOGConfigOMatic.AgOpenGPS
 
             var selectedRelease = _releases[selectedIndex];
             
-            // Find appropriate asset
+            // Find AgOpenGPS zip file (agopengps*.zip)
             var targetAsset = selectedRelease.Assets?.FirstOrDefault(a => 
-                (assetType == "installer" && (a.Name.EndsWith(".msi") || a.Name.EndsWith(".exe"))) ||
-                (assetType == "portable" && a.Name.Contains("portable")));
+                a.Name.StartsWith("agopengps", StringComparison.OrdinalIgnoreCase) && 
+                a.Name.EndsWith(".zip", StringComparison.OrdinalIgnoreCase));
 
             if (targetAsset == null)
             {
-                MessageBox.Show($"No {assetType} found for this release.", "Not Available", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("No AgOpenGPS zip file found for this release.", "Not Available", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             try
             {
-                btnDownloadInstaller.Enabled = false;
-                btnDownloadPortable.Enabled = false;
+                // Ensure download directory exists before attempting download
+                if (!EnsureDownloadDirectoryExists())
+                {
+                    return; // Exit if directory creation failed
+                }
+
+                btnDownloadZip.Enabled = false;
                 progressBar.Visible = true;
                 lblStatus.Text = $"Downloading {targetAsset.Name}...";
 
                 var downloadPath = Path.Combine(_downloadPath, targetAsset.Name);
                 await DownloadFile(targetAsset.DownloadUrl, downloadPath);
 
-                lblStatus.Text = "Download completed!";
-                MessageBox.Show($"Downloaded successfully to:\n{downloadPath}", "Download Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                lblStatus.Text = "Extracting files...";
+                progressBar.Style = ProgressBarStyle.Marquee;
+                
+                // Extract the zip file and handle subfolder structure
+                await ExtractZipFile(downloadPath, _downloadPath, selectedRelease.TagName);
+
+                lblStatus.Text = "Installation completed!";
+                
+                // Update local installation info after extraction
+                UpdateLocalInstallationInfo();
+                
+                MessageBox.Show($"AgOpenGPS {selectedRelease.TagName} has been successfully installed to:\n{_downloadPath}", 
+                    "Installation Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                
+                // Optionally delete the zip file after extraction
+                try
+                {
+                    File.Delete(downloadPath);
+                }
+                catch
+                {
+                    // Ignore if we can't delete the zip file
+                }
             }
             catch (Exception ex)
             {
@@ -292,8 +430,8 @@ namespace AOGConfigOMatic.AgOpenGPS
             }
             finally
             {
-                btnDownloadInstaller.Enabled = true;
-                btnDownloadPortable.Enabled = true;
+                btnDownloadZip.Enabled = true;
+                progressBar.Style = ProgressBarStyle.Blocks;
                 progressBar.Visible = false;
             }
         }
@@ -325,6 +463,66 @@ namespace AOGConfigOMatic.AgOpenGPS
                     }
                 }
             }
+        }
+
+        private async Task ExtractZipFile(string zipFilePath, string extractToPath, string versionTag)
+        {
+            await Task.Run(() =>
+            {
+                using (var archive = ZipFile.OpenRead(zipFilePath))
+                {
+                    // Check if there's a common root folder in the zip
+                    var rootFolders = archive.Entries
+                        .Where(e => !string.IsNullOrEmpty(e.FullName) && e.FullName.Contains("/"))
+                        .Select(e => e.FullName.Split('/')[0])
+                        .Distinct()
+                        .ToList();
+
+                    // If there's only one root folder, we'll extract its contents directly to the target
+                    var hasRootFolder = rootFolders.Count == 1 && 
+                                       archive.Entries.All(e => string.IsNullOrEmpty(e.FullName) || 
+                                                               e.FullName.StartsWith(rootFolders[0] + "/") || 
+                                                               e.FullName == rootFolders[0]);
+
+                    foreach (var entry in archive.Entries)
+                    {
+                        if (string.IsNullOrEmpty(entry.FullName)) continue;
+
+                        string relativePath;
+                        
+                        if (hasRootFolder && entry.FullName.StartsWith(rootFolders[0] + "/"))
+                        {
+                            // Remove the root folder from the path
+                            relativePath = entry.FullName.Substring(rootFolders[0].Length + 1);
+                        }
+                        else if (hasRootFolder && entry.FullName == rootFolders[0])
+                        {
+                            // Skip the root folder entry itself
+                            continue;
+                        }
+                        else
+                        {
+                            relativePath = entry.FullName;
+                        }
+
+                        if (string.IsNullOrEmpty(relativePath)) continue;
+
+                        var destinationPath = Path.Combine(extractToPath, relativePath);
+                        var destinationDir = Path.GetDirectoryName(destinationPath);
+
+                        if (!string.IsNullOrEmpty(destinationDir) && !Directory.Exists(destinationDir))
+                        {
+                            Directory.CreateDirectory(destinationDir);
+                        }
+
+                        // Only extract files, not directories
+                        if (!entry.FullName.EndsWith("/") && !string.IsNullOrEmpty(entry.Name))
+                        {
+                            entry.ExtractToFile(destinationPath, overwrite: true);
+                        }
+                    }
+                }
+            });
         }
     }
 

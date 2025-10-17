@@ -24,10 +24,10 @@ Adding an AgOpenGPS tab will enhance the application's utility by providing a ce
    - Provide filtering options (stable only, include pre-releases)
 
 2. **Download Capabilities**
-   - Download selected AgOpenGPS release packages
+   - Download selected AgOpenGPS release packages - these are the agopengps*.zip file only, there is no "installer"
    - Show download progress with progress bar
-   - Support for different asset types (installer, portable, source code)
-   - Automatic detection of appropriate architecture (x64, x86)
+   - Only offer the agopengps*.zip from each release
+   - No architecture detection required
 
 3. **Local Version Management**
    - allow user to select a default installation location, or display currently installed AgOpenGPS version (if detectable)

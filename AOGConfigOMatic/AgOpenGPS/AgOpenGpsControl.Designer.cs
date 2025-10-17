@@ -39,8 +39,7 @@ namespace AOGConfigOMatic.AgOpenGPS
             this.btnRefresh = new System.Windows.Forms.Button();
             this.chkIncludePreReleases = new System.Windows.Forms.CheckBox();
             this.groupBoxActions = new System.Windows.Forms.GroupBox();
-            this.btnDownloadPortable = new System.Windows.Forms.Button();
-            this.btnDownloadInstaller = new System.Windows.Forms.Button();
+            this.btnDownloadZip = new System.Windows.Forms.Button();
             this.lblSelectedRelease = new System.Windows.Forms.Label();
             this.groupBoxDownloadPath = new System.Windows.Forms.GroupBox();
             this.btnBrowsePath = new System.Windows.Forms.Button();
@@ -174,8 +173,7 @@ namespace AOGConfigOMatic.AgOpenGPS
             // 
             this.groupBoxActions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBoxActions.Controls.Add(this.btnDownloadPortable);
-            this.groupBoxActions.Controls.Add(this.btnDownloadInstaller);
+            this.groupBoxActions.Controls.Add(this.btnDownloadZip);
             this.groupBoxActions.Controls.Add(this.lblSelectedRelease);
             this.groupBoxActions.Location = new System.Drawing.Point(3, 259);
             this.groupBoxActions.Name = "groupBoxActions";
@@ -184,25 +182,15 @@ namespace AOGConfigOMatic.AgOpenGPS
             this.groupBoxActions.TabStop = false;
             this.groupBoxActions.Text = "Actions";
             // 
-            // btnDownloadPortable
+            // btnDownloadZip
             // 
-            this.btnDownloadPortable.Location = new System.Drawing.Point(155, 45);
-            this.btnDownloadPortable.Name = "btnDownloadPortable";
-            this.btnDownloadPortable.Size = new System.Drawing.Size(120, 23);
-            this.btnDownloadPortable.TabIndex = 2;
-            this.btnDownloadPortable.Text = "Download Portable";
-            this.btnDownloadPortable.UseVisualStyleBackColor = true;
-            this.btnDownloadPortable.Click += new System.EventHandler(this.btnDownloadPortable_Click);
-            // 
-            // btnDownloadInstaller
-            // 
-            this.btnDownloadInstaller.Location = new System.Drawing.Point(15, 45);
-            this.btnDownloadInstaller.Name = "btnDownloadInstaller";
-            this.btnDownloadInstaller.Size = new System.Drawing.Size(120, 23);
-            this.btnDownloadInstaller.TabIndex = 1;
-            this.btnDownloadInstaller.Text = "Download Installer";
-            this.btnDownloadInstaller.UseVisualStyleBackColor = true;
-            this.btnDownloadInstaller.Click += new System.EventHandler(this.btnDownloadInstaller_Click);
+            this.btnDownloadZip.Location = new System.Drawing.Point(15, 45);
+            this.btnDownloadZip.Name = "btnDownloadZip";
+            this.btnDownloadZip.Size = new System.Drawing.Size(120, 23);
+            this.btnDownloadZip.TabIndex = 1;
+            this.btnDownloadZip.Text = "Download Zip";
+            this.btnDownloadZip.UseVisualStyleBackColor = true;
+            this.btnDownloadZip.Click += new System.EventHandler(this.btnDownloadZip_Click);
             // 
             // lblSelectedRelease
             // 
@@ -283,6 +271,7 @@ namespace AOGConfigOMatic.AgOpenGPS
             // 
             // btnLaunchAgOpenGPS
             // 
+            this.btnLaunchAgOpenGPS.Enabled = false;
             this.btnLaunchAgOpenGPS.Location = new System.Drawing.Point(15, 65);
             this.btnLaunchAgOpenGPS.Name = "btnLaunchAgOpenGPS";
             this.btnLaunchAgOpenGPS.Size = new System.Drawing.Size(120, 23);
@@ -365,8 +354,7 @@ namespace AOGConfigOMatic.AgOpenGPS
         private System.Windows.Forms.Button btnRefresh;
         private System.Windows.Forms.CheckBox chkIncludePreReleases;
         private System.Windows.Forms.GroupBox groupBoxActions;
-        private System.Windows.Forms.Button btnDownloadPortable;
-        private System.Windows.Forms.Button btnDownloadInstaller;
+        private System.Windows.Forms.Button btnDownloadZip;
         private System.Windows.Forms.Label lblSelectedRelease;
         private System.Windows.Forms.GroupBox groupBoxDownloadPath;
         private System.Windows.Forms.Button btnBrowsePath;
