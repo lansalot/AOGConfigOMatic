@@ -358,13 +358,14 @@ namespace AOGConfigOMatic.AgOpenGPS
             UpdateStartupCheckboxState();
         }
 
+
         private void UpdateStartupCheckboxState()
         {
             try
             {
                 string keyName = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
                 string valueName = "AgOpenGPS";
-                
+
                 using (var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(keyName, false))
                 {
                     var value = key?.GetValue(valueName);
