@@ -35,6 +35,7 @@ Adding an AgOpenGPS tab will enhance the application's utility by providing a ce
    - Show download history and cached releases
    - Option to launch installed AgOpenGPS directly from the tab
 
+
 ### User Interface Design
 
 #### Layout Structure
