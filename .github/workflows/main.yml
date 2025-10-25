@@ -37,7 +37,7 @@ jobs:
       with:
         fetch-depth: 0
         
-    - uses: paulhatch/semantic-version@v5.3.0
+    - uses: paulhatch/semantic-version@v5.4.0
       id: versioning
       with:
         branch: main
@@ -77,6 +77,16 @@ jobs:
       shell: cmd
       run: dir /s /b
       
+    - name: Update Inno Setup version
+      run: |
+        (Get-Content setup.iss) -replace '#define MyAppVersion ".*"', '#define MyAppVersion "${{ steps.versioning.outputs.major }}.${{ steps.versioning.outputs.minor }}.${{ steps.versioning.outputs.patch }}.${{ steps.versioning.outputs.increment }}"' | Set-Content setup.iss
+      shell: powershell
+      
+    - name: Build Installer with Inno Setup
+      run: |
+        & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" setup.iss
+      shell: powershell
+      
     - name: Build Artifact AOGConfigOMatic
       shell: powershell
       run: Compress-Archive -Path AOGConfigOMatic\bin\Release\* -DestinationPath AOGConfigOMatic.zip -Force
@@ -104,3 +114,14 @@ jobs:
         asset_path: ./AOGConfigOMatic.zip
         asset_name: AOGConfigOMatic.zip
         asset_content_type: application/zip
+        
+    - name: Upload Release Asset Installer
+      id: upload-release-asset-installer
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./installer/AOGConfigOMatic-Setup-${{ steps.versioning.outputs.major }}.${{ steps.versioning.outputs.minor }}.${{ steps.versioning.outputs.patch }}.${{ steps.versioning.outputs.increment }}.exe
+        asset_name: AOGConfigOMatic-Setup-${{ steps.versioning.outputs.version }}.exe
+        asset_content_type: application/octet-stream

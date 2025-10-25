@@ -166,6 +166,9 @@
     <Content Include="ubxfwupdate.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\Firmwares\**\*.*" Link="Firmwares\%(RecursiveDir)%(Filename)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="lunOptics.libTeensySharp">

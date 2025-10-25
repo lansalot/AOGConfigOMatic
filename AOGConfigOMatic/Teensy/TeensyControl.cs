@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Threading;
 using System.Windows.Forms;
 using libTeensySharp;
@@ -15,10 +13,7 @@ namespace AOGConfigOMatic.Teensy
     public partial class TeensyControl : UserControl
     {
         private readonly List<TeensyFirmwareItem> teensyFirmwareItems = new List<TeensyFirmwareItem>();
-
         private readonly TeensyWatcher watcher;
-        private readonly string localCSV = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Firmwares.csv");
-        private readonly string localHexStub = AppDomain.CurrentDomain.BaseDirectory;
         private string chosenFirmware = "";
 
         public TeensyControl()
@@ -43,30 +38,69 @@ namespace AOGConfigOMatic.Teensy
 
         private void UpdateFirmwareBox()
         {
-            lbFirmware.DataSource = null;
+            tvFirmware.Nodes.Clear();
             teensyFirmwareItems.Clear();
-            if (File.Exists(localCSV))
+
+            // Scan for hex files in Firmwares folder (packaged with application)
+            string firmwaresPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Firmwares");
+            if (Directory.Exists(firmwaresPath))
             {
-                foreach (var line in File.ReadAllLines(localCSV))
+                // Scan subdirectories and build tree structure
+                ScanDirectoryForHexFiles(firmwaresPath, tvFirmware.Nodes);
+            }
+            else
+            {
+                LogMessage("Firmwares folder not found at: " + firmwaresPath);
+            }
+            
+            tvFirmware.ExpandAll();
+        }
+
+        private void ScanDirectoryForHexFiles(string directoryPath, TreeNodeCollection parentNodes)
+        {
+            try
+            {
+                // Get all subdirectories
+                var subDirs = Directory.GetDirectories(directoryPath);
+                
+                foreach (var subDir in subDirs)
                 {
-                    var parts = line.Split(',');
-                    teensyFirmwareItems.Add(new TeensyFirmwareItem(parts[0], parts[1]));
+                    string folderName = Path.GetFileName(subDir);
+                    TreeNode folderNode = new TreeNode(folderName);
+                    folderNode.Tag = null; // Folder node, not a firmware file
+                    
+                    // Get all hex files in this directory
+                    var hexFiles = Directory.GetFiles(subDir, "*.hex");
+                    
+                    foreach (var hexFile in hexFiles)
+                    {
+                        string fileName = Path.GetFileName(hexFile).Replace(".hex", "");
+                        // Only add if not already in the list
+                        if (!teensyFirmwareItems.Any(s => s.Location.Equals(hexFile, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            var firmwareItem = new TeensyFirmwareItem(fileName, hexFile);
+                            teensyFirmwareItems.Add(firmwareItem);
+                            
+                            TreeNode fileNode = new TreeNode(fileName);
+                            fileNode.Tag = firmwareItem;
+                            folderNode.Nodes.Add(fileNode);
+                        }
+                    }
+                    
+                    // Recursively scan subdirectories
+                    ScanDirectoryForHexFiles(subDir, folderNode.Nodes);
+                    
+                    // Only add folder node if it has children
+                    if (folderNode.Nodes.Count > 0)
+                    {
+                        parentNodes.Add(folderNode);
+                    }
                 }
             }
-            var hexFiles = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.hex");
-            foreach (var hexFile in hexFiles)
+            catch (Exception ex)
             {
-                if (!teensyFirmwareItems.Any(s => s.Location.IndexOf(Path.GetFileName(hexFile)) > -1))
-                {
-                    teensyFirmwareItems.Add(new TeensyFirmwareItem(Path.GetFileName(hexFile), Path.GetFileName(hexFile)));
-                }
+                LogMessage($"Error scanning directory {directoryPath}: {ex.Message}");
             }
-            lbFirmware.DataSource = teensyFirmwareItems;
-            lbFirmware.DisplayMember = "DisplayText";
-            lbFirmware.ValueMember = "Location";
-            lbFirmware.SelectedIndex = -1;
-            lbFirmware.Refresh();
-            // add any *.hex files in current folder to the list
         }
 
         private void ConnectedTeensiesChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -94,7 +128,8 @@ namespace AOGConfigOMatic.Teensy
             }
             else
             {
-                if (lbFirmware.SelectedIndex > -1)
+                // Check if a firmware file is selected (not just a folder)
+                if (tvFirmware.SelectedNode != null && tvFirmware.SelectedNode.Tag is TeensyFirmwareItem)
                 {
                     btnProgram.Enabled = true;
                 }
@@ -106,39 +141,26 @@ namespace AOGConfigOMatic.Teensy
             btnProgram.Enabled = false;
         }
 
-        private bool DownloadFile(string url, string localFile)
-        {
-            try
-            {
-                using (WebClient client = new WebClient())
-                {
-                    client.DownloadFile(url, localFile);
-                    LogMessage("Downloaded " + localFile);
-                    return true;
-                }
-            }
-            catch (Exception ex)
-            {
-                LogMessage("Error downloading " + url + "\r\n" + ex.Message);
-                return false;
-            }
-        }
+
 
         private void btnRefreshTeensy_Click(object sender, EventArgs e)
         {
-            string url = "https://raw.githubusercontent.com/lansalot/AOGConfigOMatic/main/AOGConfigOMatic/Firmwares.csv";
-            DownloadFile(url, localCSV);
+            LogMessage("Rescanning Firmwares folder...");
             UpdateFirmwareBox();
+            LogMessage("Firmware list refreshed");
         }
 
         private async void btnProgramTeensy_Click(object sender, EventArgs e)
         {
-            string localHexFile = Path.Combine(localHexStub, Path.GetFileName(chosenFirmware));
+            string localHexFile = chosenFirmware;
+            
+            // Verify the file exists
             if (!File.Exists(localHexFile))
             {
-                LogMessage("Firmware file not found locally.. downloading");
-                if (!DownloadFile(chosenFirmware, localHexFile)) return;
+                LogMessage("Error: Firmware file not found: " + localHexFile);
+                return;
             }
+            
             if ((lbTeensies.SelectedIndex == -1) | (lbTeensies.Items.Count == 0))
             {
                 LogMessage("Sorry, no Teensies selected to program");
@@ -167,17 +189,33 @@ namespace AOGConfigOMatic.Teensy
             }
         }
 
-        private void lbFirmware_SelectedIndexChanged_1(object sender, EventArgs e)
+        private void tvFirmware_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (lbFirmware.SelectedIndex == -1)
+            if (e.Node == null || e.Node.Tag == null)
             {
+                // Selected a folder node, not a firmware file
                 btnProgram.Enabled = false;
+                chosenFirmware = "";
                 return;
             }
-            else if (lbFirmware.SelectedIndex > -1 && lbTeensies.SelectedIndex > -1 && lbTeensies.Items.Count > 0)
+            
+            if (e.Node.Tag is TeensyFirmwareItem firmwareItem)
             {
-                chosenFirmware = ((TeensyFirmwareItem)lbFirmware.SelectedItem).Location;
-                btnProgram.Enabled = true;
+                chosenFirmware = firmwareItem.Location;
+                
+                if (lbTeensies.SelectedIndex > -1 && lbTeensies.Items.Count > 0)
+                {
+                    btnProgram.Enabled = true;
+                }
+                else
+                {
+                    btnProgram.Enabled = false;
+                }
+            }
+            else
+            {
+                btnProgram.Enabled = false;
+                chosenFirmware = "";
             }
         }
     }
