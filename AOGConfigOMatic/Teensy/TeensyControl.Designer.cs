@@ -41,19 +41,19 @@
             // 
             // lbTeensies
             // 
-            this.lbTeensies.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbTeensies.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbTeensies.FormattingEnabled = true;
-            this.lbTeensies.ItemHeight = 20;
+            this.lbTeensies.ItemHeight = 16;
             this.lbTeensies.Location = new System.Drawing.Point(101, 309);
-            this.lbTeensies.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.lbTeensies.Margin = new System.Windows.Forms.Padding(2);
             this.lbTeensies.Name = "lbTeensies";
-            this.lbTeensies.Size = new System.Drawing.Size(357, 24);
+            this.lbTeensies.Size = new System.Drawing.Size(479, 20);
             this.lbTeensies.TabIndex = 19;
             // 
             // pbProgram
             // 
-            this.pbProgram.Location = new System.Drawing.Point(529, 352);
-            this.pbProgram.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pbProgram.Location = new System.Drawing.Point(534, 354);
+            this.pbProgram.Margin = new System.Windows.Forms.Padding(2);
             this.pbProgram.Name = "pbProgram";
             this.pbProgram.Size = new System.Drawing.Size(172, 19);
             this.pbProgram.TabIndex = 18;
@@ -73,22 +73,22 @@
             // 
             this.txtMessages.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtMessages.Location = new System.Drawing.Point(10, 377);
-            this.txtMessages.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.txtMessages.Margin = new System.Windows.Forms.Padding(2);
             this.txtMessages.Multiline = true;
             this.txtMessages.Name = "txtMessages";
             this.txtMessages.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtMessages.Size = new System.Drawing.Size(692, 160);
+            this.txtMessages.Size = new System.Drawing.Size(696, 160);
             this.txtMessages.TabIndex = 16;
             // 
             // btnRefreshTeensy
             // 
             this.btnRefreshTeensy.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnRefreshTeensy.Location = new System.Drawing.Point(600, 15);
-            this.btnRefreshTeensy.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnRefreshTeensy.Margin = new System.Windows.Forms.Padding(2);
             this.btnRefreshTeensy.Name = "btnRefreshTeensy";
             this.btnRefreshTeensy.Size = new System.Drawing.Size(105, 42);
             this.btnRefreshTeensy.TabIndex = 15;
-            this.btnRefreshTeensy.Text = "Refresh";
+            this.btnRefreshTeensy.Text = "Rescan";
             this.btnRefreshTeensy.UseVisualStyleBackColor = true;
             this.btnRefreshTeensy.Click += new System.EventHandler(this.btnRefreshTeensy_Click);
             // 
@@ -96,7 +96,7 @@
             // 
             this.btnProgram.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnProgram.Location = new System.Drawing.Point(596, 296);
-            this.btnProgram.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnProgram.Margin = new System.Windows.Forms.Padding(2);
             this.btnProgram.Name = "btnProgram";
             this.btnProgram.Size = new System.Drawing.Size(105, 37);
             this.btnProgram.TabIndex = 14;
@@ -118,18 +118,18 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(5, 15);
+            this.label1.Location = new System.Drawing.Point(11, 15);
             this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(513, 29);
+            this.label1.Size = new System.Drawing.Size(222, 29);
             this.label1.TabIndex = 12;
-            this.label1.Text = "1. Select a local firmware or Refresh list if none";
+            this.label1.Text = "Available firmwares";
             // 
             // tvFirmware
             // 
             this.tvFirmware.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tvFirmware.Location = new System.Drawing.Point(16, 60);
-            this.tvFirmware.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tvFirmware.Margin = new System.Windows.Forms.Padding(2);
             this.tvFirmware.Name = "tvFirmware";
             this.tvFirmware.Size = new System.Drawing.Size(690, 232);
             this.tvFirmware.TabIndex = 11;
