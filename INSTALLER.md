@@ -47,7 +47,7 @@ The installer includes:
 ## Installation Options
 
 During installation, users can choose:
-- Installation directory (default: `C:\Program Files\AOGConfigOMatic`)
+- Installation directory (default: `(users profile)`)
 - Create desktop icon (unchecked by default)
 - Start with Windows (unchecked by default)
 - Launch application after installation

@@ -74,7 +74,7 @@ namespace AOGConfigOMatic.Teensy
                     
                     foreach (var hexFile in hexFiles)
                     {
-                        string fileName = Path.GetFileName(hexFile).Replace(".hex","");
+                        string fileName = Path.GetFileName(hexFile).Replace(".hex", "");
                         // Only add if not already in the list
                         if (!teensyFirmwareItems.Any(s => s.Location.Equals(hexFile, StringComparison.OrdinalIgnoreCase)))
                         {
