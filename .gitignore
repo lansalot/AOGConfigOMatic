@@ -400,6 +400,9 @@ FodyWeavers.xsd
 *.msm
 *.msp
 
+# Inno Setup output directory
+installer/
+
 # JetBrains Rider
 *.sln.iml
 .idea/
