@@ -1,4 +1,4 @@
-name: Build and release
+name: Build validation
 
 on:
   # Runs on all branch pushes - "main" is excluded below, this is a test-build dry-run only
