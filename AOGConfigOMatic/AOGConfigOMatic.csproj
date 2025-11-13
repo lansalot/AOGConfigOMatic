@@ -164,7 +164,7 @@
     <Content Include="ConfigUM982.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="ConfigUM98S.txt">
+    <Content Include="ConfigUM982S.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="ConfigUM982D.txt">
