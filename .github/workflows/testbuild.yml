@@ -1,0 +1,80 @@
+name: Build and release
+
+on:
+  # Runs on all branch pushes - "main" is excluded below, this is a test-build dry-run only
+  push:
+    paths-ignore:
+      - 'Firmwares/**'
+      - '.github/**'
+      - 'Firmwares.csv'
+      - 'README.md'
+  workflow_dispatch:
+
+env:
+  # Path to the solution file relative to the root of the project.https://github.com/jaapvandenhandel/AgOpenGPS/network/members
+  SOLUTION_FILE_PATH: ./AOGConfigOMatic.sln
+
+  # Configuration type to build.
+  # You can convert this to a build matrix if you need coverage of multiple configuration types.
+  # https://docs.github.com/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+  BUILD_CONFIGURATION: Release
+
+jobs:
+  build:
+    if: github.ref != 'refs/heads/main'
+    runs-on: windows-latest
+
+    steps:
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v0
+      with:
+        versionSpec: '5.x'
+      
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        
+    - uses: paulhatch/semantic-version@v5.3.0
+      id: versioning
+      with:
+        branch: main
+        # The prefix to use to identify tags
+        tag_prefix: "v"
+        # A string which, if present in a git commit, indicates that a change represents a
+        # major (breaking) change, supports regular expressions wrapped with '/'
+        major_pattern: "/MAJOR:/"
+        # Same as above except indicating a minor change, supports regular expressions wrapped with '/'
+        minor_pattern: "/MINOR:/"
+        # A string to determine the format of the version output
+        version_format: "v${major}.${minor}.${patch}.${increment}"
+        bump_each_commit: false
+        
+    - name: Update AssemblyVersion and AssemblyFileVersion
+      run: ./SetVersion.ps1 "${{ steps.versioning.outputs.major }}.${{ steps.versioning.outputs.minor }}.${{ steps.versioning.outputs.patch }}.${{ steps.versioning.outputs.increment }}"
+      shell: powershell
+
+    # - name: Update AssemblyVersion and AssemblyFileVersion
+    #   run: ./SetVersion.ps1 "${{ steps.gitversion.outputs.SemVer }}"
+    #   shell: powershell
+   
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v1
+
+    - name: Restore NuGet packages
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: nuget restore ${{env.SOLUTION_FILE_PATH}} -PackagesDirectory .\packages -source "https://api.nuget.org/v3/index.json"
+
+    - name: Build
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      # Add additional options to the MSBuild command line here (like platform or verbosity level).
+      # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
+      run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
+   
+    - name: Directory Listing
+      shell: cmd
+      run: dir /s /b
+      
+    - name: Build Artifact AOGConfigOMatic
+      shell: powershell
+      run: Compress-Archive -Path AOGConfigOMatic\bin\Release\* -DestinationPath AOGConfigOMatic.zip -Force
