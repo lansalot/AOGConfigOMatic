@@ -408,8 +408,6 @@ namespace AOGConfigOMatic.AgOpenGPS
                         }
                         else
                         {
-                            MessageBox.Show("AgOpenGPS executable not found. Please install AgOpenGPS first.", 
-                                "Executable Not Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             chkStartWithWindows.Checked = false;
                         }
                     }
@@ -447,8 +445,6 @@ namespace AOGConfigOMatic.AgOpenGPS
                 
                 if (string.IsNullOrEmpty(agOpenGpsExe) || !File.Exists(agOpenGpsExe))
                 {
-                    MessageBox.Show("AgOpenGPS executable not found. Please install AgOpenGPS first.", 
-                        "Executable Not Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
