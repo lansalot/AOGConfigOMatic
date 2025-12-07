@@ -173,6 +173,7 @@ namespace AOGConfigOMatic
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "frmMain";
             this.Text = "AOGConfig-O-Matic!";
+            this.Load += new System.EventHandler(this.frmMain_Load);
             this.tbPages.ResumeLayout(false);
             this.tabGPS.ResumeLayout(false);
             this.tabTeensy.ResumeLayout(false);
