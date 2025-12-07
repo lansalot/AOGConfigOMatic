@@ -1,4 +1,5 @@
-﻿using System;
+﻿using lunOptics.libUsbTree;
+using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
@@ -69,6 +70,12 @@ namespace AOGConfigOMatic
                     Process.Start("https://www.buymeacoffee.com/agopengps");
                     break;
             }
+        }
+
+        private void frmMain_Load(object sender, EventArgs e)
+        {
+            var version = FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
+            this.Text = $"aogConfigOMatic v{version}";
         }
     }
 }

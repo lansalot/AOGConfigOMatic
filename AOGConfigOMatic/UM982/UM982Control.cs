@@ -40,9 +40,22 @@ namespace AOGConfigOMatic.UM982
         private void MySerialPort_DataReceived_UM982(object sender, SerialDataReceivedEventArgs e)
         {
             SerialPort spLUM982 = (SerialPort)sender;
-            rcvDataUM982 = "";
-            rcvDataUM982 = spLUM982.ReadLine();
-            SafeChatUM982(rcvDataUM982);
+            if (!spLUM982.IsOpen)
+            {
+                return;
+            }
+
+            try
+            {
+                rcvDataUM982 = "";
+                rcvDataUM982 = spLUM982.ReadLine();
+                SafeChatUM982(rcvDataUM982);
+            }
+            catch (Exception ex)
+            {
+                // Port was closed or other error during read
+                SafeChatUM982Status($"Error in DataReceived: {ex.Message}");
+            }
         }
 
         private void StopReadingDataUM982()
@@ -67,11 +80,11 @@ namespace AOGConfigOMatic.UM982
         private void ScanPortsUM982()
         {
             lbCOMPortsUM982.Items.Clear();
-            
+
             try
             {
                 var portInfos = UsbSerialPortInfo.GetSerialPorts();
-                
+
                 foreach (var portInfo in portInfos)
                 {
                     // For AiO devices, try to identify by interface first
@@ -79,10 +92,10 @@ namespace AOGConfigOMatic.UM982
                     {
                         portInfo.AioPortType = AioPortIdentifier.IdentifyPortByInterface(portInfo.InterfaceNumber);
                     }
-                    
+
                     lbCOMPortsUM982.Items.Add(portInfo);
                 }
-                
+
                 lbCOMPortsUM982.DisplayMember = "FriendlyName";
                 lbCOMPortsUM982.ValueMember = "PortName";
             }
@@ -92,29 +105,53 @@ namespace AOGConfigOMatic.UM982
                 var basicPorts = SerialPort.GetPortNames();
                 foreach (var port in basicPorts)
                 {
-                    var basicPortInfo = new UsbSerialPortInfo 
-                    { 
-                        PortName = port, 
+                    var basicPortInfo = new UsbSerialPortInfo
+                    {
+                        PortName = port,
                         Description = port,
                         AioPortType = AioPortType.Unknown
                     };
                     lbCOMPortsUM982.Items.Add(basicPortInfo);
                 }
-                
+
                 lbCOMPortsUM982.DisplayMember = "FriendlyName";
                 lbCOMPortsUM982.ValueMember = "PortName";
-                
-                System.Diagnostics.Debug.WriteLine($"Error scanning UM982 ports: {ex.Message}");
+
+                SafeChatUM982Status($"Error scanning UM982 ports: {ex.Message}");
+            }
+        }
+
+
+        private void SafeChatUM982Status(string chat)
+        {
+            if (isClosing) { return; }
+            if (txtUM982Status.InvokeRequired)
+            {
+                txtUM982Status.BeginInvoke(new MethodInvoker(delegate
+                {
+                    txtUM982Status.AppendText(chat + Environment.NewLine);
+                }));
+            }
+            else
+            {
+                txtUM982Status.AppendText(chat + Environment.NewLine);
             }
         }
 
         private void SafeChatUM982(string chat)
         {
             if (isClosing) { return; }
-            txtSerialChatUM982.Invoke(new MethodInvoker(delegate
+            if (txtSerialChatUM982.InvokeRequired)
+            {
+                txtSerialChatUM982.BeginInvoke(new MethodInvoker(delegate
+                {
+                    txtSerialChatUM982.AppendText(chat + Environment.NewLine);
+                }));
+            }
+            else
             {
                 txtSerialChatUM982.AppendText(chat + Environment.NewLine);
-            }));
+            }
         }
 
         private void btnURefreshUM982_Click(object sender, EventArgs e)
@@ -128,7 +165,7 @@ namespace AOGConfigOMatic.UM982
             {
                 SelectedComPort = portInfo.PortName;
                 btnConnectUM982.Enabled = true;
-                
+
                 // Show additional info for AiO devices
                 if (portInfo.IsAioGpsConfigurator)
                 {
@@ -139,8 +176,8 @@ namespace AOGConfigOMatic.UM982
                         AioPortType.Gps2 => " (GPS2 - Bridge to Serial3)",
                         _ => " (AiO GPS Configurator)"
                     };
-                    
-                    System.Diagnostics.Debug.WriteLine($"Selected AiO UM982 port: {portInfo.PortName}{typeInfo}");
+
+                    SafeChatUM982Status($"Selected AiO UM982 port: {portInfo.PortName}{typeInfo}");
                 }
             }
             else
@@ -170,7 +207,7 @@ namespace AOGConfigOMatic.UM982
                 }
                 catch
                 {
-                    SafeChatUM982("Error opening serial port - make sure anything using it is closed!");
+                    SafeChatUM982Status("Error opening serial port - make sure anything using it is closed!");
                     return;
                 }
                 btnConnectUM982.Text = "Disconnect";
@@ -178,21 +215,27 @@ namespace AOGConfigOMatic.UM982
                 isReadingData = true;
 
                 // Check for UM982 at 115200 factory default. 
-                txtSerialChatUM982.AppendText("Checking for UM982 at 115200 bps ..." + Environment.NewLine);
+                SafeChatUM982Status("Checking for UM982 at 115200 bps ...");
                 _serialPort.WriteLine("VERSION" + Environment.NewLine);
                 Thread.Sleep(250);
-                if (rcvDataUM982.Contains("OK"))
+                if (!rcvDataUM982.Contains("OK"))
                 {
-                    txtSerialChatUM982.AppendText("Found UM982 at 115200 bps. Changing to 460800 bps." + Environment.NewLine);
+                    SafeChatUM982Status("Found UM982 at 115200 bps. Changing to 460800 bps.");
                     _serialPort.WriteLine("CONFIG COM1 460800" + Environment.NewLine);
                     Thread.Sleep(250);
                     _serialPort.WriteLine("CONFIG COM2 460800" + Environment.NewLine);
                     Thread.Sleep(250);
                     _serialPort.WriteLine("CONFIG COM3 460800" + Environment.NewLine);
                     Thread.Sleep(250);
-                    txtSerialChatUM982.AppendText("Temporarily changed to 460800 bps." + Environment.NewLine);
+                    _serialPort.DataReceived -= MySerialPort_DataReceived_UM982;
+                    _serialPort.DiscardInBuffer();
+                    _serialPort.DiscardOutBuffer();
+                    _serialPort.Close();
+                    _serialPort.BaudRate = 460800;
+                    _serialPort.Open();
+                    _serialPort.DataReceived += MySerialPort_DataReceived_UM982;
                 }
-                _serialPort.BaudRate = 460800;
+
 
                 // End factory defualt check
 
@@ -218,7 +261,7 @@ namespace AOGConfigOMatic.UM982
         {
             if (_serialPort == null || !_serialPort.IsOpen)
             {
-                txtSerialChatUM982.AppendText("Serial port is not open - please Connect" + Environment.NewLine);
+                SafeChatUM982Status("Serial port is not open - please Connect");
                 return;
             }
             ConfigureReceiverUM982();
@@ -226,7 +269,7 @@ namespace AOGConfigOMatic.UM982
 
         private void ConfigureReceiverUM982()
         {
-            if (string.IsNullOrEmpty(SelectedComPort) || string.IsNullOrEmpty(configurationFilenameUM982) || !isReadingData)
+            if (string.IsNullOrEmpty(SelectedComPort) || !isReadingData)
             {
                 return;
             }
@@ -251,8 +294,7 @@ namespace AOGConfigOMatic.UM982
             }
             catch (Exception ex)
             {
-                var msg = ex.ToString();
-                MessageBox.Show(msg, "Error configuring receiver");
+                SafeChatUM982Status("Error configuring with " + configurationFilenameUM982 + " and error " + ex.Message.ToString());
             }
             isProgrammingUM982 = true;
             if (lines != null)
@@ -261,7 +303,7 @@ namespace AOGConfigOMatic.UM982
                 {
                     _serialPort!.DataReceived += MySerialPort_DataReceived_UM982;
 
-                    SafeChatUM982("Configuring:");
+                    SafeChatUM982Status("Configuring..");
 
                     // Skip the first line of the file, that is the version
                     foreach (var line in lines.Skip(1))
@@ -271,11 +313,11 @@ namespace AOGConfigOMatic.UM982
                         Thread.Sleep(500);
                     }
 
-                    SafeChatUM982("Configuring receiver done");
+                    SafeChatUM982Status("Configuring receiver done");
                 }
                 catch (Exception ex)
                 {
-                    SafeChatUM982("Error sending configuration to receiver" + Environment.NewLine + ex.ToString());
+                    SafeChatUM982Status("Error sending configuration to receiver" + Environment.NewLine + ex.ToString());
                 }
                 finally
                 {
