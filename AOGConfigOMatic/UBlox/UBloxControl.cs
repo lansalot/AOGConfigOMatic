@@ -636,14 +636,18 @@ namespace AOGConfigOMatic.UBlox
                 btnConnect.Text = "Connect";
             }
 
+            var appDir = Path.GetDirectoryName(Application.ExecutablePath);
+            var ubxfwupdatePath = Path.Combine(appDir, "ubxfwupdate.exe");
+            var firmwarePath = Path.Combine(appDir, "UBX113.bin");
             var batchFile = Path.GetTempPath() + "flashf9p.bat";
+            
             if (xBeeMode)
             {
-                File.WriteAllText(batchFile, "ubxfwupdate -p \\\\.\\" + SelectedComPort + " -b 38400:38400:460800 --no-fis 1 -s 1 -t 1 -v 1 UBX113.bin");
+                File.WriteAllText(batchFile, $"\"{ubxfwupdatePath}\" -p \\\\.\\{SelectedComPort} -b 38400:38400:460800 --no-fis 1 -s 1 -t 1 -v 1 \"{firmwarePath}\"");
             }
             else
             {
-                File.WriteAllText(batchFile, "ubxfwupdate -p \\\\.\\" + SelectedComPort + " -b 460800:9600:460800 --no-fis 1 -s 1 -t 1 -v 1 UBX113.bin");
+                File.WriteAllText(batchFile, $"\"{ubxfwupdatePath}\" -p \\\\.\\{SelectedComPort} -b 460800:9600:460800 --no-fis 1 -s 1 -t 1 -v 1 \"{firmwarePath}\"");
             }
             File.AppendAllText(batchFile, "\r\npause");
 
