@@ -40,7 +40,7 @@
             this.lblFirmware = new System.Windows.Forms.Label();
             this.btnConnect = new System.Windows.Forms.Button();
             this.lblCOMPorts = new System.Windows.Forms.Label();
-            this.txtSerialChat = new System.Windows.Forms.TextBox();
+            this.richTextBoxSerialChat = new System.Windows.Forms.RichTextBox();
             this.lbCOMPorts = new System.Windows.Forms.ListBox();
             this.btnURefresh = new System.Windows.Forms.Button();
             this.lblUblox = new System.Windows.Forms.Label();
@@ -172,16 +172,17 @@
             this.lblCOMPorts.TabIndex = 5;
             this.lblCOMPorts.Text = "Serial ports";
             // 
-            // txtSerialChat
+            // richTextBoxSerialChat
             // 
-            this.txtSerialChat.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtSerialChat.Location = new System.Drawing.Point(27, 353);
-            this.txtSerialChat.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.txtSerialChat.Multiline = true;
-            this.txtSerialChat.Name = "txtSerialChat";
-            this.txtSerialChat.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtSerialChat.Size = new System.Drawing.Size(905, 285);
-            this.txtSerialChat.TabIndex = 4;
+            this.richTextBoxSerialChat.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.richTextBoxSerialChat.Location = new System.Drawing.Point(27, 353);
+            this.richTextBoxSerialChat.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.richTextBoxSerialChat.Name = "richTextBoxSerialChat";
+            this.richTextBoxSerialChat.ReadOnly = true;
+            this.richTextBoxSerialChat.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+            this.richTextBoxSerialChat.Size = new System.Drawing.Size(905, 285);
+            this.richTextBoxSerialChat.TabIndex = 4;
+            this.richTextBoxSerialChat.Text = "";
             // 
             // lbCOMPorts
             // 
@@ -233,7 +234,7 @@
             this.Controls.Add(this.lblFirmware);
             this.Controls.Add(this.btnConnect);
             this.Controls.Add(this.lblCOMPorts);
-            this.Controls.Add(this.txtSerialChat);
+            this.Controls.Add(this.richTextBoxSerialChat);
             this.Controls.Add(this.lbCOMPorts);
             this.Controls.Add(this.btnURefresh);
             this.Controls.Add(this.lblUblox);
@@ -261,7 +262,7 @@
         private System.Windows.Forms.Label lblFirmware;
         private System.Windows.Forms.Button btnConnect;
         private System.Windows.Forms.Label lblCOMPorts;
-        private System.Windows.Forms.TextBox txtSerialChat;
+        private System.Windows.Forms.RichTextBox richTextBoxSerialChat;
         private System.Windows.Forms.ListBox lbCOMPorts;
         private System.Windows.Forms.Button btnURefresh;
         private System.Windows.Forms.Label lblUblox;
