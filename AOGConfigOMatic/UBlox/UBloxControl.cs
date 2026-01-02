@@ -667,31 +667,22 @@ namespace AOGConfigOMatic.UBlox
             {
                 if (e.Data != null)
                 {
-                    richTextBoxSerialChat.Invoke(new Action(() => 
-                    {
-                        richTextBoxSerialChat.AppendText(e.Data + Environment.NewLine, Color.Blue);
-                    }));
+                    richTextBoxSerialChat.Invoke(new Action(() => richTextBoxSerialChat.AppendText(e.Data + Environment.NewLine, Color.Blue)));
                 }
             };
             process.ErrorDataReceived += (s, e) =>
             {
                 if (e.Data != null)
                 {
-                    richTextBoxSerialChat.Invoke(new Action(() => 
-                    {
-                        richTextBoxSerialChat.AppendText(e.Data + Environment.NewLine, Color.Red);
-                    }));
+                    richTextBoxSerialChat.Invoke(new Action(() => richTextBoxSerialChat.AppendText(e.Data + Environment.NewLine, Color.Red)));
                 }
             };
             process.Exited += (s, e) =>
             {
                 process.WaitForExit();
 
-                richTextBoxSerialChat.Invoke(new Action(() => 
-                {
-                    richTextBoxSerialChat.AppendText("Flashing F9P firmware complete" + Environment.NewLine, Color.Green);
-                    richTextBoxSerialChat.AppendText("Now, hit configure to send the configuration!" + Environment.NewLine, Color.Green);
-                }));
+                richTextBoxSerialChat.Invoke(new Action(() => richTextBoxSerialChat.AppendText("Flashing F9P firmware complete" + Environment.NewLine)));
+                richTextBoxSerialChat.Invoke(new Action(() => richTextBoxSerialChat.AppendText("Now, hit configure to send the configuration!" + Environment.NewLine)));
                 xBeeMode = false; // should be OK to reset this, post-flash
             };
             process.Start();
