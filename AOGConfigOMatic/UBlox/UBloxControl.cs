@@ -126,12 +126,12 @@ namespace AOGConfigOMatic.UBlox
                 richTextBoxSerialChat.Clear();
                 if (sender.ToString().IndexOf("Timer") > 0)
                 {
-                    richTextBoxSerialChat.AppendText("No messages received - trying Xbee mode!" + Environment.NewLine);
+                    richTextBoxSerialChat.AppendText("No messages received - trying Xbee mode!" + Environment.NewLine, Color.Red);
                 }
                 tmrMessages.Start();
                 if (lbCOMPorts.SelectedIndex == -1)
                 {
-                    richTextBoxSerialChat.AppendText("Please select a COM port" + Environment.NewLine);
+                    richTextBoxSerialChat.AppendText("Please select a COM port" + Environment.NewLine, Color.Red);
                     return;
                 }
                 if (xBeeMode)
@@ -148,7 +148,7 @@ namespace AOGConfigOMatic.UBlox
                 }
                 catch
                 {
-                    SafeChat("Error opening serial port - make sure anything using it (U-Center?) is closed!");
+                    richTextBoxSerialChat.AppendText("Error opening serial port - make sure anything using it (U-Center?) is closed!" + Environment.NewLine, Color.Red);
                     return;
                 }
                 btnConnect.Text = "Disconnect";
@@ -194,6 +194,8 @@ namespace AOGConfigOMatic.UBlox
             richTextBoxSerialChat.Invoke(new MethodInvoker(delegate
             {
                 richTextBoxSerialChat.AppendText(chat + Environment.NewLine);
+                richTextBoxSerialChat.SelectionStart = richTextBoxSerialChat.Text.Length;
+                richTextBoxSerialChat.ScrollToCaret();
             }));
         }
 
@@ -652,33 +654,44 @@ namespace AOGConfigOMatic.UBlox
             string arguments = $@" -p {port} -b {baudRate} --no-fis 1 -s 1 -t 1 -v 1 {firmware}";
 
             richTextBoxSerialChat.AppendText("Flashing F9P firmware" + Environment.NewLine);
+
             var process = new Process();
             process.StartInfo.FileName = "ubxfwupdate.exe";
             process.StartInfo.Arguments = arguments;
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.RedirectStandardOutput = true;
             process.StartInfo.RedirectStandardError = true;
+            process.StartInfo.CreateNoWindow = true;
             process.EnableRaisingEvents = true;
             process.OutputDataReceived += (s, e) =>
             {
                 if (e.Data != null)
                 {
-                    richTextBoxSerialChat.Invoke(new Action(() => richTextBoxSerialChat.AppendText(e.Data + Environment.NewLine, Color.Blue)));
+                    richTextBoxSerialChat.Invoke(new Action(() => 
+                    {
+                        richTextBoxSerialChat.AppendText(e.Data + Environment.NewLine, Color.Blue);
+                    }));
                 }
             };
             process.ErrorDataReceived += (s, e) =>
             {
                 if (e.Data != null)
                 {
-                    richTextBoxSerialChat.Invoke(new Action(() => richTextBoxSerialChat.AppendText(e.Data + Environment.NewLine, Color.Red)));
+                    richTextBoxSerialChat.Invoke(new Action(() => 
+                    {
+                        richTextBoxSerialChat.AppendText(e.Data + Environment.NewLine, Color.Red);
+                    }));
                 }
             };
             process.Exited += (s, e) =>
             {
                 process.WaitForExit();
 
-                richTextBoxSerialChat.Invoke(new Action(() => richTextBoxSerialChat.AppendText("Flashing F9P firmware complete" + Environment.NewLine)));
-                richTextBoxSerialChat.Invoke(new Action(() => richTextBoxSerialChat.AppendText("Now, hit configure to send the configuration!" + Environment.NewLine)));
+                richTextBoxSerialChat.Invoke(new Action(() => 
+                {
+                    richTextBoxSerialChat.AppendText("Flashing F9P firmware complete" + Environment.NewLine, Color.Green);
+                    richTextBoxSerialChat.AppendText("Now, hit configure to send the configuration!" + Environment.NewLine, Color.Green);
+                }));
                 xBeeMode = false; // should be OK to reset this, post-flash
             };
             process.Start();
@@ -690,7 +703,10 @@ namespace AOGConfigOMatic.UBlox
         {
             if (_serialPort == null || !_serialPort.IsOpen)
             {
-                richTextBoxSerialChat.AppendText("Serial port is not open - please Connect" + Environment.NewLine);
+                richTextBoxSerialChat.Invoke(new Action(() =>
+                {
+                    richTextBoxSerialChat.AppendText("Serial port is not open - please Connect" + Environment.NewLine, Color.Red);
+                }));
                 return;
             }
             if (lblFirmwareWarning.ForeColor == Color.Red)

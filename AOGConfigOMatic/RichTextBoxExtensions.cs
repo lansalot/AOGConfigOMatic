@@ -12,6 +12,8 @@ namespace AOGConfigOMatic
             richTextBox.SelectionColor = color;
             richTextBox.AppendText(text);
             richTextBox.SelectionColor = richTextBox.ForeColor;
+            richTextBox.SelectionStart = richTextBox.TextLength;
+            richTextBox.ScrollToCaret();
         }
     }
 }
