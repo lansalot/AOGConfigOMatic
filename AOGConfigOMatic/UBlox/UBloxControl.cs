@@ -49,12 +49,26 @@ namespace AOGConfigOMatic.UBlox
             }
             if (_serialPort.IsOpen)
             {
+                _serialPort.DataReceived -= MySerialPort_DataReceived;
                 _serialPort.DiscardInBuffer();
                 _serialPort.DiscardOutBuffer();
-                _serialPort.DataReceived -= MySerialPort_DataReceived;
-                if (!isClosing)
+                Thread.Sleep(100);
+                try
                 {
-                    _serialPort.Close();
+                    if (!isClosing)
+                    {
+                        _serialPort.Close();
+                    }
+                } catch
+                {
+                                        try
+                    {
+                        _serialPort?.Dispose();
+                    }
+                    catch
+                    {
+                        // Ignore disposal errors
+                    }
                 }
             }
         }
@@ -148,7 +162,7 @@ namespace AOGConfigOMatic.UBlox
                 }
                 catch
                 {
-                    richTextBoxSerialChat.AppendText("Error opening serial port - make sure anything using it (U-Center?) is closed!" + Environment.NewLine, Color.Red);
+                    SafeChat("Error opening serial port - make sure anything using it (U-Center?) is closed!");
                     return;
                 }
                 btnConnect.Text = "Disconnect";
@@ -193,9 +207,7 @@ namespace AOGConfigOMatic.UBlox
             if (isClosing) { return; }
             richTextBoxSerialChat.Invoke(new MethodInvoker(delegate
             {
-                richTextBoxSerialChat.AppendText(chat + Environment.NewLine);
-                richTextBoxSerialChat.SelectionStart = richTextBoxSerialChat.Text.Length;
-                richTextBoxSerialChat.ScrollToCaret();
+                richTextBoxSerialChat.AppendText(chat + Environment.NewLine, Color.Black);
             }));
         }
 
@@ -651,10 +663,9 @@ namespace AOGConfigOMatic.UBlox
 
             string baudRate = $"{currentBaudRate}:{safebootBaudRate}:{updateBaudRate}";
             string firmware = "UBX113.bin";
-            string arguments = $@" -p {port} -b {baudRate} --no-fis 1 -s 1 -t 1 -v 1 {firmware}";
+            string arguments = $@" -p {port} -b {baudRate} -a 1 --no-fis 1 -s 1 -t 1 -v 1 {firmware}";
 
-            richTextBoxSerialChat.AppendText("Flashing F9P firmware" + Environment.NewLine);
-
+            richTextBoxSerialChat.AppendText("Flashing F9P firmware" + Environment.NewLine, Color.Green);
             var process = new Process();
             process.StartInfo.FileName = "ubxfwupdate.exe";
             process.StartInfo.Arguments = arguments;
@@ -668,6 +679,7 @@ namespace AOGConfigOMatic.UBlox
                 if (e.Data != null)
                 {
                     richTextBoxSerialChat.Invoke(new Action(() => richTextBoxSerialChat.AppendText(e.Data + Environment.NewLine, Color.Blue)));
+
                 }
             };
             process.ErrorDataReceived += (s, e) =>
@@ -681,8 +693,8 @@ namespace AOGConfigOMatic.UBlox
             {
                 process.WaitForExit();
 
-                richTextBoxSerialChat.Invoke(new Action(() => richTextBoxSerialChat.AppendText("Flashing F9P firmware complete" + Environment.NewLine)));
-                richTextBoxSerialChat.Invoke(new Action(() => richTextBoxSerialChat.AppendText("Now, hit configure to send the configuration!" + Environment.NewLine)));
+                richTextBoxSerialChat.Invoke(new Action(() => richTextBoxSerialChat.AppendText("Flashing F9P firmware complete" + Environment.NewLine, Color.Green)));
+                richTextBoxSerialChat.Invoke(new Action(() => richTextBoxSerialChat.AppendText("Now, hit configure to send the configuration!" + Environment.NewLine, Color.Green)));
                 xBeeMode = false; // should be OK to reset this, post-flash
             };
             process.Start();
@@ -694,16 +706,13 @@ namespace AOGConfigOMatic.UBlox
         {
             if (_serialPort == null || !_serialPort.IsOpen)
             {
-                richTextBoxSerialChat.Invoke(new Action(() =>
-                {
-                    richTextBoxSerialChat.AppendText("Serial port is not open - please Connect" + Environment.NewLine, Color.Red);
-                }));
+                richTextBoxSerialChat.AppendText("Serial port is not open - please Connect" + Environment.NewLine, Color.Red);
                 return;
             }
             if (lblFirmwareWarning.ForeColor == Color.Red)
             {
                 MessageBox.Show("Firmware MUST be version 1.13. Please flash it first.", "Error!!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                richTextBoxSerialChat.AppendText("Firmware MUST be version 1.13. Please flash it first." + Environment.NewLine);
+                richTextBoxSerialChat.AppendText("Firmware MUST be version 1.13. Please flash it first." + Environment.NewLine, Color.Red);
                 return;
             }
             ConfigureReceiver(_FileName);
