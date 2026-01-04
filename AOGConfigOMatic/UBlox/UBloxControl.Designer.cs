@@ -221,6 +221,7 @@
             // tmrMessages
             // 
             this.tmrMessages.Interval = 3000;
+            this.tmrMessages.Tick += new System.EventHandler(this.tmrMessages_Tick);
             // 
             // UBloxControl
             // 
@@ -238,7 +239,7 @@
             this.Controls.Add(this.lbCOMPorts);
             this.Controls.Add(this.btnURefresh);
             this.Controls.Add(this.lblUblox);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "UBloxControl";
             this.Size = new System.Drawing.Size(960, 663);
             this.Load += new System.EventHandler(this.UBloxControl_Load);
