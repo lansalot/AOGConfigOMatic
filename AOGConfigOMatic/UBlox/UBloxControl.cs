@@ -47,55 +47,86 @@ namespace AOGConfigOMatic.UBlox
             {
                 return;
             }
+
             if (_serialPort.IsOpen)
             {
-                _serialPort.DataReceived -= MySerialPort_DataReceived;
-                _serialPort.DiscardInBuffer();
-                _serialPort.DiscardOutBuffer();
-                Thread.Sleep(100);
                 try
                 {
+                    // Unsubscribe from event first to prevent new events
+                    _serialPort.DataReceived -= MySerialPort_DataReceived;
+
+                    // Give a moment for event handler to exit
+                    Thread.Sleep(100);
+
+                    // Try to discard buffers
+                    try
+                    {
+                        _serialPort.DiscardInBuffer();
+                        _serialPort.DiscardOutBuffer();
+                    }
+                    catch { }
+
                     if (!isClosing)
                     {
-                        _serialPort.Close();
-                    }
-                } catch
-                {
-                                        try
-                    {
-                        _serialPort?.Dispose();
-                    }
-                    catch
-                    {
-                        // Ignore disposal errors
+                        // Attempt to close with a timeout - if it hangs, abandon the port
+                        var closeTask = System.Threading.Tasks.Task.Run(() =>
+                        {
+                            try
+                            {
+                                _serialPort?.Close();
+                            }
+                            catch { }
+                        });
+
+                        // Wait max 500ms for close to complete
+                        if (!closeTask.Wait(500))
+                        {
+                            // Close is hanging - abandon the port entirely
+                            Debug.WriteLine("SerialPort.Close() timed out - abandoning port");
+                            // Don't wait for the task, just let it go
+                        }
                     }
                 }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error in StopReadingData: {ex.Message}");
+                }
+                finally
+                {
+                    // Always null out the reference so a new instance can be created
+                    // The old one will be garbage collected eventually
+                    _serialPort = null;
+                }
+            }
+            else
+            {
+                _serialPort = null;
             }
         }
 
         private void ScanPorts()
         {
             lbCOMPorts.Items.Clear();
-            
+
             try
             {
                 var portInfos = UsbSerialPortInfo.GetSerialPorts();
-                
+
                 foreach (var portInfo in portInfos)
                 {
                     // For AiO devices, try to identify by interface first, then by behavior if needed
                     if (portInfo.IsAioGpsConfigurator && portInfo.AioPortType == AioPortType.Unknown)
                     {
                         portInfo.AioPortType = AioPortIdentifier.IdentifyPortByInterface(portInfo.InterfaceNumber);
-                        
+
                         // If interface method didn't work, try behavioral identification
                         // Note: This is commented out by default as it requires opening ports
                         // Uncomment if needed: AioPortIdentifier.IdentifyAioPortAsync(portInfo, CancellationToken.None);
                     }
-                    
+
                     lbCOMPorts.Items.Add(portInfo);
                 }
-                
+
                 // Update display format
                 lbCOMPorts.DisplayMember = "FriendlyName";
                 lbCOMPorts.ValueMember = "PortName";
@@ -106,18 +137,18 @@ namespace AOGConfigOMatic.UBlox
                 var basicPorts = SerialPort.GetPortNames();
                 foreach (var port in basicPorts)
                 {
-                    var basicPortInfo = new UsbSerialPortInfo 
-                    { 
-                        PortName = port, 
+                    var basicPortInfo = new UsbSerialPortInfo
+                    {
+                        PortName = port,
                         Description = port,
                         AioPortType = AioPortType.Unknown
                     };
                     lbCOMPorts.Items.Add(basicPortInfo);
                 }
-                
+
                 lbCOMPorts.DisplayMember = "FriendlyName";
                 lbCOMPorts.ValueMember = "PortName";
-                
+
                 System.Diagnostics.Debug.WriteLine($"Error scanning ports: {ex.Message}");
             }
         }
@@ -129,6 +160,7 @@ namespace AOGConfigOMatic.UBlox
 
         private void btnConnect_Click(object sender, EventArgs e)
         {
+            Debug.WriteLine("xbeeMode is " + xBeeMode.ToString());
             if (isReadingData)
             {
                 StopReadingData();
@@ -180,7 +212,7 @@ namespace AOGConfigOMatic.UBlox
             {
                 SelectedComPort = portInfo.PortName;
                 btnConnect.Enabled = true;
-                
+
                 // Show additional info for AiO devices
                 if (portInfo.IsAioGpsConfigurator)
                 {
@@ -191,7 +223,7 @@ namespace AOGConfigOMatic.UBlox
                         AioPortType.Gps2 => " (GPS2 - Bridge to Serial3)",
                         _ => " (AiO GPS Configurator)"
                     };
-                    
+
                     // You could add a status label to show this info
                     System.Diagnostics.Debug.WriteLine($"Selected AiO port: {portInfo.PortName}{typeInfo}");
                 }
@@ -716,10 +748,10 @@ namespace AOGConfigOMatic.UBlox
                 return;
             }
             ConfigureReceiver(_FileName);
-            if (!xBeeMode)
+            if (xBeeMode)
             {
                 _serialPort.BaudRate = 460800;
-                xBeeMode = true;
+                xBeeMode = false;
                 btnConnect_Click(sender, e);
             }
         }
