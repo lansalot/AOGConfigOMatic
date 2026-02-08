@@ -292,7 +292,7 @@ namespace AOGConfigOMatic.UBlox
             bool ubxMessage = false;
             if (!isProgrammingF9P && buf.Length > 4)
             {
-                if (buf[0] == 0xB5 && buf[1] == 0x62 && buf[2] == 0x01 && buf[3] == 0x3C && buf[4] == 0x40)
+                if (buf[0] == 0xB5 && buf[1] == 0x62 && buf[2] == 0x01 && buf[3] == 0x3C) // relposned header
                 {
                     SafeChat("RELPOS message received (binary, not displayed)");
                 }
