@@ -39,7 +39,7 @@ namespace AOGConfigOMatic
         /// <summary>
         /// Gets a specific type of AiO port
         /// </summary>
-        public static UsbSerialPortInfo GetAioPort(AioPortType portType)
+        public static UsbSerialPortInfo? GetAioPort(AioPortType portType)
         {
             var aioPorts = GetAioConfiguratorPorts();
             foreach (var port in aioPorts)
