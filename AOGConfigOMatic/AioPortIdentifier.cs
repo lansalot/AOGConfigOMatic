@@ -13,7 +13,7 @@ namespace AOGConfigOMatic
         
         public static async Task<AioPortType> IdentifyPortByBehaviorAsync(string portName, CancellationToken cancellationToken)
         {
-            SerialPort serialPort = null;
+            SerialPort? serialPort = null;
             try
             {
                 serialPort = new SerialPort(portName, 115200, Parity.None, 8, StopBits.One);

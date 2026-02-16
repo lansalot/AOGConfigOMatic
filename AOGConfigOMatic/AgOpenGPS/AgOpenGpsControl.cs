@@ -254,7 +254,7 @@ namespace AOGConfigOMatic.AgOpenGPS
             try
             {
                 // Search for agopengps.exe recursively in the download path
-                string agOpenGpsExe = null;
+                string? agOpenGpsExe = null;
                 
                 if (Directory.Exists(_downloadPath))
                 {
@@ -309,7 +309,7 @@ namespace AOGConfigOMatic.AgOpenGPS
         private void UpdateLocalInstallationInfo()
         {
             // Search for agopengps.exe recursively in the download path
-            string agOpenGpsExe = null;
+            string? agOpenGpsExe = null;
             
             if (Directory.Exists(_downloadPath))
             {
@@ -391,7 +391,7 @@ namespace AOGConfigOMatic.AgOpenGPS
                     if (chkStartWithWindows.Checked)
                     {
                         // Find AgOpenGPS executable to add to startup
-                        string agOpenGpsExe = null;
+                        string? agOpenGpsExe = null;
                         if (Directory.Exists(_downloadPath))
                         {
                             var exeFiles = Directory.GetFiles(_downloadPath, "agopengps.exe", SearchOption.AllDirectories);
@@ -433,7 +433,7 @@ namespace AOGConfigOMatic.AgOpenGPS
             try
             {
                 // Find AgOpenGPS executable
-                string agOpenGpsExe = null;
+                string? agOpenGpsExe = null;
                 if (Directory.Exists(_downloadPath))
                 {
                     var exeFiles = Directory.GetFiles(_downloadPath, "agopengps.exe", SearchOption.AllDirectories);
@@ -460,7 +460,7 @@ namespace AOGConfigOMatic.AgOpenGPS
                 
                 // Set shortcut properties
                 Type shortcutType = shortcut.GetType();
-                shortcutType.InvokeMember("TargetPath", System.Reflection.BindingFlags.SetProperty, null, shortcut, new object[] { agOpenGpsExe });
+                shortcutType.InvokeMember("TargetPath", System.Reflection.BindingFlags.SetProperty, null, shortcut, new object?[] { agOpenGpsExe });
                 shortcutType.InvokeMember("WorkingDirectory", System.Reflection.BindingFlags.SetProperty, null, shortcut, new object[] { Path.GetDirectoryName(agOpenGpsExe) });
                 shortcutType.InvokeMember("Description", System.Reflection.BindingFlags.SetProperty, null, shortcut, new object[] { "AgOpenGPS - Precision Agriculture Application" });
                 shortcutType.InvokeMember("Save", System.Reflection.BindingFlags.InvokeMethod, null, shortcut, null);
@@ -664,39 +664,39 @@ namespace AOGConfigOMatic.AgOpenGPS
     {
 
         [JsonProperty("html_url")]
-        public string HTMLUrl { get; set; }
+        public string HTMLUrl { get; set; } = null!;
 
         [JsonProperty("tag_name")]
-        public string TagName { get; set; }
+        public string TagName { get; set; } = null!;
 
         [JsonProperty("name")]
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         [JsonProperty("published_at")]
         public DateTime PublishedAt { get; set; }
 
         [JsonProperty("body")]
-        public string Body { get; set; }
+        public string Body { get; set; } = null!;
 
         [JsonProperty("prerelease")]
         public bool IsPrerelease { get; set; }
 
         [JsonProperty("assets")]
-        public List<ReleaseAsset> Assets { get; set; }
+        public List<ReleaseAsset> Assets { get; set; } = new List<ReleaseAsset>();
     }
 
     public class ReleaseAsset
     {
         [JsonProperty("name")]
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         [JsonProperty("browser_download_url")]
-        public string DownloadUrl { get; set; }
+        public string DownloadUrl { get; set; } = null!;
 
         [JsonProperty("size")]
         public long Size { get; set; }
 
         [JsonProperty("content_type")]
-        public string ContentType { get; set; }
+        public string ContentType { get; set; } = null!;
     }
 }
