@@ -580,27 +580,34 @@ namespace AOGConfigOMatic.UBlox
             UbxCalculateCheckSum(msgBytes);
 
             _ack = false;
-            _serialPort!.Write(msgBytes, 0, msgBytes.Length);
-            _serialPort.Write(msgBytes, 0, msgBytes.Length);
-            _serialPort.Write(msgBytes, 0, msgBytes.Length);
-            _serialPort.Write(msgBytes, 0, msgBytes.Length);
-            Thread.Sleep(1000);
-            // Wait for ack or nak, should be within 1sec.
-            if (_waitForAckNak.WaitOne(1000))
+            if (_serialPort is null || _serialPort.IsOpen)
             {
-                // Check ACK or NAK
-                if (!_ack)
+                _serialPort!.Write(msgBytes, 0, msgBytes.Length);
+                _serialPort.Write(msgBytes, 0, msgBytes.Length);
+                _serialPort.Write(msgBytes, 0, msgBytes.Length);
+                _serialPort.Write(msgBytes, 0, msgBytes.Length);
+                Thread.Sleep(1000);
+                if (_waitForAckNak.WaitOne(1000))
                 {
-                    //safeChat("NAK received");
+                    // Check ACK or NAK
+                    if (!_ack)
+                    {
+                        //safeChat("NAK received");
+                        return false;
+                    }
+                    //safeChat("AK received");
+                    return true;
+                }
+                else
+                {
+                    SafeChat("Timeout waiting for ACK on:");
+                    Debug.WriteLine(BitConverter.ToString(msgBytes));
                     return false;
                 }
-                //safeChat("AK received");
-                return true;
             }
             else
             {
-                SafeChat("Timeout waiting for ACK on:");
-                Debug.WriteLine(BitConverter.ToString(msgBytes));
+                SafeChat("Serial port was closed unexpectedly");
                 return false;
             }
         }
