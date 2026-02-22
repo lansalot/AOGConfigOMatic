@@ -363,6 +363,20 @@ namespace AOGConfigOMatic.AgOpenGPS
         {
             try
             {
+                
+                string startupPath = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
+                string shortcutPath = Path.Combine(startupPath, "AgOpenGPS.lnk");
+                if (File.Exists(shortcutPath))
+                {
+                    try
+                    {
+                        File.Delete(shortcutPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        // meh
+                    }
+                }
                 string keyName = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
                 string valueName = "AgOpenGPS";
 
